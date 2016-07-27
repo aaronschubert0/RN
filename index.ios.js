@@ -36,8 +36,8 @@ const Divider = () => {
 
 const One = () => {
   return (
-    <ScrollView>
-    <View style={{paddingLeft: 20, paddingRight: 20}}>
+    <ScrollView >
+    <View style={{paddingLeft: 20, paddingTop: 10, paddingRight: 20}}>
       <Text style={{fontSize: 22, fontWeight: '700', paddingBottom: 15}}>
       Sturgeon: Tackling 'unnacceptable' child poverty a priority
       </Text>

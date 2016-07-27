@@ -196,7 +196,7 @@ export default class TabNavigator extends Component {
           directionalLockEnabled
           showsHorizontalScrollIndicator={false}
           automaticallyAdjustContentInsets={false}
-          style={{ marginBottom: 20, height: 50}}
+          style={{height: 50}}
           onScroll={e => {
             this._tabsScrollViewPosition = e.nativeEvent.contentOffset.x
             // console.log(e.nativeEvent.contentOffset.x)
