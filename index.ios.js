@@ -21,7 +21,7 @@ const Metro = () => {
 
 const Meta = ({ time, region }) => {
   return (
-    <View style={{flexDirection: 'row', paddingBottom: 15}}>
+    <View style={{flexDirection: 'row'}}>
       <Text style={{fontSize: 11, fontWeight: '500', color: '#09b4ff'}}>{time + ' / '}</Text>
       <Text style={{fontSize: 11, fontWeight: '500', color: 'gray'}}>{region}</Text>
     </View>
@@ -37,11 +37,11 @@ const Divider = () => {
 const One = () => {
   return (
     <ScrollView >
-    <View style={{paddingLeft: 20, paddingTop: 10, paddingRight: 20}}>
+    <View style={{paddingLeft: 20, paddingTop: 10, paddingBottom: 15, paddingRight: 20}}>
       <Text style={{fontSize: 22, fontWeight: '700', paddingBottom: 15}}>
       Sturgeon: Tackling 'unnacceptable' child poverty a priority
       </Text>
-      <Meta style={{paddingBottom: 15}} time="34 MIN" region="GLASGOW & WEST"/>
+      <Meta time="34 MIN" region="GLASGOW & WEST"/>
     </View>
     <Image
     source={{uri: 'https://files.stv.tv/imagebase/461/w768/461445-daniel-roche-left-ramona-marquez-and-tyger-drew-honey-in-2011.jpg'}}
@@ -61,56 +61,84 @@ const One = () => {
       </View>
     </View>
     <Divider />
+
+    <View style={{paddingLeft: 20, paddingRight: 20}}>
+      <Text style={{fontSize: 14, fontWeight: '500', paddingBottom: 5}}>
+      Man accussed of murdering police officer to appear in court
+      </Text>
+      <Meta time="34 MIN" region="GLASGOW & WEST"/>
+    </View>
+    <Divider />
+
+    <View style={{paddingLeft: 20, paddingTop: 10, paddingBottom: 15, paddingRight: 20}}>
+      <Text style={{fontSize: 22, fontWeight: '700', paddingBottom: 15}}>
+      Sturgeon: Tackling 'unnacceptable' child poverty a priority
+      </Text>
+      <Meta time="34 MIN" region="GLASGOW & WEST"/>
+    </View>
+    <Image
+    source={{uri: 'https://files.stv.tv/imagebase/461/w768/461445-daniel-roche-left-ramona-marquez-and-tyger-drew-honey-in-2011.jpg'}}
+    style={{width: 375, height: 211}}/>
+    <Divider />
+
+    <View style={{flexDirection: 'row', paddingLeft: 20, paddingRight: 20}}>
+    <Image
+      source={{uri: 'https://files.stv.tv/imagebase/13/w768/13179-crash-at-busy-city-roundabout.jpg'}}
+      style={{width: 150, height: 84, marginRight: 10}}
+      />
+      <View style={{flex: 1}}>
+        <Text style={{fontSize: 14, fontWeight: '500', paddingBottom: 5}}>
+        Murder probe after elderly man stabbed to death in street
+        </Text>
+        <Meta time="34 MIN" region="GLASGOW & WEST"/>
+      </View>
+    </View>
+    <Divider />
+
+    <View style={{paddingLeft: 20, paddingRight: 20}}>
+      <Text style={{fontSize: 14, fontWeight: '500', paddingBottom: 5}}>
+      Man accussed of murdering police officer to appear in court
+      </Text>
+      <Meta time="34 MIN" region="GLASGOW & WEST"/>
+    </View>
+    <Divider />
+
     </ScrollView>
   )
 }
 const Two = () => {
   return (
-    <View>
-      <Text>Two</Text>
-    </View>
+    <One />
   )
 }
 const Three = () => {
   return (
-    <View>
-      <Text>Three</Text>
-    </View>
+    <One />
   )
 }
 const Four = () => {
   return (
-    <View>
-      <Text>Four</Text>
-    </View>
+    <One />
   )
 }
 const Five = () => {
   return (
-    <View>
-      <Text>Five</Text>
-    </View>
+    <One />
   )
 }
 const Six = () => {
   return (
-    <View>
-      <Text>Six</Text>
-    </View>
+    <One />
   )
 }
 const Seven = () => {
   return (
-    <View>
-      <Text>Seven</Text>
-    </View>
+    <One />
   )
 }
 const Eight = () => {
   return (
-    <View>
-      <Text>Eight</Text>
-    </View>
+    <One />
   )
 }
 
