@@ -84,14 +84,12 @@ export default class TabNavigator extends Component {
       ? Math.ceil(currentIndex)
       : Math.floor(currentIndex)
 
-    const startTab = tabKeys[startIndex]
-    const nextTab = tabKeys[endIndex]
+    const startTab = tabKeys[Math.round(startIndex)]
+    const nextTab = tabKeys[Math.round(endIndex)]
     const progressTowardsNextTab = 1 - (endIndex - currentIndex)
-
-    console.log(progressTowardsNextTab);
-
-    // this.state.tabs[nextTab].color.setValue(direction === 'left' ? 1-(progressTowardsNextTab-1) : progressTowardsNextTab)
-    // this.state.tabs[startTab].color.setValue(direction === 'left' ? -(1-progressTowardsNextTab) : 1-progressTowardsNextTab)
+    
+    this.state.tabs[nextTab].color.setValue(direction === 'left' ? 1-(progressTowardsNextTab-1) : progressTowardsNextTab)
+    this.state.tabs[startTab].color.setValue(direction === 'left' ? -(1-progressTowardsNextTab) : 1-progressTowardsNextTab)
     // console.log(startIndex, currentIndex)
     // console.log(`start: ${startIndex}, current: ${currentIndex}, end: ${endIndex}`)
 
