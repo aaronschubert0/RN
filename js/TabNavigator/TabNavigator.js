@@ -87,7 +87,7 @@ export default class TabNavigator extends Component {
     const startTab = tabKeys[Math.round(startIndex)]
     const nextTab = tabKeys[Math.round(endIndex)]
     const progressTowardsNextTab = 1 - (endIndex - currentIndex)
-    
+
     this.state.tabs[nextTab].color.setValue(direction === 'left' ? 1-(progressTowardsNextTab-1) : progressTowardsNextTab)
     this.state.tabs[startTab].color.setValue(direction === 'left' ? -(1-progressTowardsNextTab) : 1-progressTowardsNextTab)
     // console.log(startIndex, currentIndex)
@@ -239,8 +239,8 @@ export default class TabNavigator extends Component {
           })}
           <View style={{
             position: 'absolute',
-            height: 2,
-            backgroundColor: 'rgba(255, 0, 0, 0.0)',
+            height: 0.5,
+            backgroundColor: '#D8D8D8',
             bottom: 0,
             left: -getDeviceWidth(),
             right: -getDeviceWidth()
@@ -282,6 +282,7 @@ export default class TabNavigator extends Component {
             if (this._contentScrollViewIsScrolling) {
               this._contentScrollViewRestingPosition = this._contentScrollViewPosition
             }
+            return true
           }}
           onScroll={e => {
             const offsetX = e.nativeEvent.contentOffset.x
