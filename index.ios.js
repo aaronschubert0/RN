@@ -122,16 +122,30 @@ class One extends Component {
       <FullScreen onPositionChange={(newPosition) => {
         this._updateToNewPosition(newPosition)
        }}>
+       {(this.state.position === 'relative') ?
+       <View>
+       <View style={{paddingLeft: 20, paddingTop: 10, paddingBottom: 15, paddingRight: 20}}>
+         <Text style={{fontSize: 22, fontWeight: '700', paddingBottom: 15}}>
+         Sturgeon: Tackling 'unnacceptable' child poverty a priority
+         </Text>
+         <Meta time="34 MIN" region="GLASGOW & WEST"/>
+       </View>
+       <Image
+       source={{uri: 'https://files.stv.tv/imagebase/461/w768/461445-daniel-roche-left-ramona-marquez-and-tyger-drew-honey-in-2011.jpg'}}
+       style={{width: 375, height: 211}}
+       />
+       </View>
+         :
         <View style={{paddingLeft: 20, paddingTop: 10, paddingBottom: 15, paddingRight: 20}}>
           <Text style={{fontSize: 22, fontWeight: '700', paddingBottom: 15}}>
           Sturgeon: Tackling 'unnacceptable' child poverty a priority
           </Text>
-          <Meta time="34 MIN" region="GLASGOW & WEST"/>
-        </View>
-        <Image
-        source={{uri: 'https://files.stv.tv/imagebase/461/w768/461445-daniel-roche-left-ramona-marquez-and-tyger-drew-honey-in-2011.jpg'}}
-        style={{width: 375, height: 211}}/>
-        {(this.state.position === 'absolute') ? <View style={{backgroundColor: 'white', height: 550}}><Text style={{padding: 10, fontSize: 16}}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean id pretium mi, sit amet volutpat sem. Nullam gravida orci at rhoncus tincidunt. Etiam ullamcorper tortor et mattis tempor. Mauris auctor sed mauris sit amet maximus. Praesent porta neque ut turpis tempor vulputate. In feugiat, mi eu tincidunt euismod, nunc mi efficitur velit, sit amet ultrices dui diam et ex. Ut luctus bibendum justo in porttitor. </Text></View> : null}
+          <Text style={{fontSize: 16, paddingBottom: 15}}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean id pretium mi, sit amet volutpat sem. </Text>
+          <Image
+          source={{uri: 'https://files.stv.tv/imagebase/461/w768/461445-daniel-roche-left-ramona-marquez-and-tyger-drew-honey-in-2011.jpg'}}
+          style={{width: 375, height: 211, marginLeft: -20}}/>
+          <View style={{backgroundColor: 'white', height: 550}}><Text style={{paddingTop: 15, fontSize: 16}}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean id pretium mi, sit amet volutpat sem. Nullam gravida orci at rhoncus tincidunt. Etiam ullamcorper tortor et mattis tempor. Mauris auctor sed mauris sit amet maximus. Praesent porta neque ut turpis tempor vulputate. In feugiat, mi eu tincidunt euismod, nunc mi efficitur velit, sit amet ultrices dui diam et ex. Ut luctus bibendum justo in porttitor. </Text></View>
+        </View> }
       </FullScreen>
       <Divider />
 
@@ -152,10 +166,10 @@ class One extends Component {
           </View>
         </View> :
         <View style={{paddingLeft: 20, paddingRight: 20}}>
-          <Text style={{fontSize: 20, fontWeight: '700', paddingBottom: 10}}>
+          <Text style={{fontSize: 20, fontWeight: '700', paddingBottom: 10, paddingTop: 10}}>
           Murder probe after elderly man stabbed to death in street
           </Text>
-          <Text style={{paddingTop: 10, fontSize: 16}}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean id pretium mi, sit amet volutpat sem. </Text>
+          <Text style={{fontSize: 16}}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean id pretium mi, sit amet volutpat sem. </Text>
           <Image
             source={{uri: 'https://files.stv.tv/imagebase/13/w768/13179-crash-at-busy-city-roundabout.jpg'}}
             style={{height: 211, marginTop: 10, marginLeft: -20, marginRight: -20}}
