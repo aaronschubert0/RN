@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
-import { AppRegistry, View, Text, Image, ScrollView, TouchableWithoutFeedback, Animated, StyleSheet } from 'react-native'
+import React, { Component, PropTypes } from 'react'
+import { AppRegistry, View, Text, Image, ScrollView, TouchableWithoutFeedback, Animated, StyleSheet, Modal } from 'react-native'
 import { TabNavigator, Tab } from './js/TabNavigator/'
 const Metro = () => {
   return (
@@ -50,39 +50,46 @@ var styles = StyleSheet.create({
   }
 });
 
-class FullScreen extends Component {
+class FullscreenOnPress extends Component {
+
+  static propTypes = {
+    fullscreenProp: PropTypes.string.isRequired
+  }
+
   constructor(props) {
     super(props)
     this.state = {
       scale: new Animated.Value(1),
-      position: 'relative'
+      fullscreen: false
     }
   }
 
   render() {
+    const { fullscreen } = this.state
+    const { children, fullscreenProp } = this.props
     return (
-      <Animated.View style={[(this.state.position === 'absolute') ? styles.visible : styles.notVisible, { position: this.state.position, zIndex: (this.state.position === 'absolute') ? 5 : 0, height: this.state.height, transform: [{scale: this.state.scale}] }]}>
-      <TouchableWithoutFeedback disabled={(this.state.position === 'absolute')} onPress={() => {
-        const currentPosition = this.state.position
-        if (currentPosition === 'relative') {
-          this.props.onPositionChange('absolute')
-          this.setState({position: 'absolute'})
-        }
-        Animated.sequence([
-          Animated.timing(this.state.scale, {toValue: 1.1, duration: 150}),
-          Animated.timing(this.state.scale, {toValue: 1, duration: 150})
-        ]).start(() => {
-          if (currentPosition === 'absolute') {
-            this.props.onPositionChange('relative')
-            this.setState({position: 'relative'})
-          }
-        })
-      }}>
-      <View style={[(this.state.position === 'absolute') ? {height: 610, width: 375, paddingBottom: 15} : {}, {backgroundColor: 'white'}]}>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          {this.props.children}
-        </ScrollView>
-      </View>
+      <Animated.View style={[(this.state.position === 'absolute') ? styles.visible : styles.notVisible, { height: this.state.height, transform: [{scale: this.state.scale}] }]}>
+      <TouchableWithoutFeedback disabled={fullscreen} onPress={() => {this.setState({ fullscreen: true })}}>
+      {(!fullscreen) ?
+        <View>
+          {React.Children.map(children, (child, index) => {
+            return React.cloneElement(child, {
+              [fullscreenProp]: fullscreen,
+              key: index
+            })
+          })}
+        </View>
+        :
+        <Modal style={{paddingBottom: 15, backgroundColor: 'white', paddingTop: 20}}>
+        {React.Children.map(children, (child, index) => {
+            return React.cloneElement(child, {
+              [fullscreenProp]: fullscreen,
+              key: index
+            })
+          })}
+        </Modal>
+      }
+
       </TouchableWithoutFeedback>
     </Animated.View>
     )
@@ -101,84 +108,143 @@ const InfoPlanel = ({ date, lastUpdatedTime }) => {
   )
 }
 
+class FadeInImage extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      opacity: new Animated.Value(0)
+    }
+  }
+
+  onLoad() {
+    Animated.timing(this.state.opacity, {
+      toValue: 1,
+      duration: 500
+    }).start()
+  }
+
+  render() {
+    console.log('render')
+    return (
+      <View
+        style={this.props.style}
+        backgroundColor={'white'}
+      >
+        <Animated.Image
+          style={[{opacity: this.state.opacity, width: this.props.style.width, height: this.props.style.height }]}
+          source={this.props.source}
+          onLoad={this.onLoad.bind(this)} />
+      </View>
+    )
+  }
+
+}
+
+const FullScreenArticle = ({title, imageURL}) => {
+  return (
+    <ScrollView style={{paddingLeft: 20, paddingRight: 20, paddingTop: 15}}>
+      <Text style={{fontSize: 20, fontWeight: '700', paddingBottom: 10, paddingTop: 10}}>
+        {title}
+      </Text>
+      <Text style={{fontSize: 16}}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean id pretium mi, sit amet volutpat sem. </Text>
+      <FadeInImage
+        source={{uri: imageURL}}
+        style={{height: 211, marginTop: 10, marginLeft: -20, marginRight: -20}}
+        />
+        <Text style={{marginTop: 10, fontSize: 16}}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean id pretium mi, sit amet volutpat sem. Nullam gravida orci at rhoncus tincidunt. Etiam ullamcorper tortor et mattis tempor. Mauris auctor sed mauris sit amet maximus. Praesent porta neque ut turpis tempor vulputate. In feugiat, mi eu tincidunt euismod, nunc mi efficitur velit, sit amet ultrices dui diam et ex. Ut luctus bibendum justo in porttitor. </Text>
+        <Text style={{paddingTop: 10, fontSize: 16}}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean id pretium mi, sit amet volutpat sem. Nullam gravida orci at rhoncus tincidunt. Etiam ullamcorper tortor et mattis tempor. Mauris auctor sed mauris sit amet maximus. Praesent porta neque ut turpis tempor vulputate. In feugiat, mi eu tincidunt euismod, nunc mi efficitur velit, sit amet ultrices dui diam et ex. Ut luctus bibendum justo in porttitor. </Text>
+    </ScrollView>
+  )
+}
+
+const BigImageArticlePreview = ({ title, imageURL, region, time }) => {
+  return (
+    <View>
+    <View style={{paddingLeft: 20, paddingTop: 10, paddingBottom: 15, paddingRight: 20}}>
+      <Text style={{fontSize: 22, fontWeight: '700', paddingBottom: 15}}>
+      {title}
+      </Text>
+      <Meta time={time} region={region}/>
+    </View>
+    <Image
+    source={{uri: imageURL}}
+    style={{width: 375, height: 211}}
+    />
+    </View>
+  )
+}
+
+const SmallImageArticlePreview = ({ title, imageURL, region, time }) => {
+  return (
+    <View style={{flexDirection: 'row', paddingLeft: 20, paddingRight: 20}}>
+    <Image
+      source={{uri: imageURL}}
+      style={{width: 150, height: 84, marginRight: 10}}
+      />
+      <View style={{flex: 1}}>
+        <Text style={{fontSize: 14, fontWeight: '500', paddingBottom: 5}}>
+        {title}
+        </Text>
+        <Meta time={time} region={region}/>
+      </View>
+    </View>
+  )
+}
+
+const ArticleSwitcher = ({ fullscreen, article, children }) => {
+  return (
+    fullscreen ? <FullScreenArticle title={article.title} imageURL={article.imageURL}/> : children
+  )
+}
+
+const Article = ({ article }) => {
+
+  function _previewForArticleType(type) {
+    if (type === 'bigimage') {
+      return <BigImageArticlePreview title={article.title} imageURL={article.imageURL} region={article.region} time={article.time}/>
+    } else if (type === 'smallimage') {
+      return <SmallImageArticlePreview title={article.title} imageURL={article.imageURL} region={article.region} time={article.time}/>
+    }
+  }
+
+  return (
+    <View>
+      <FullscreenOnPress fullscreenProp="fullscreen">
+        <ArticleSwitcher article={article}>
+          {_previewForArticleType(article.type)}
+        </ArticleSwitcher>
+      </FullscreenOnPress>
+    </View>
+  )
+}
+
+
+
 class One extends Component {
 
   constructor(props) {
     super(props)
-    this.state = {
-      position: 'relative'
-    }
-  }
-
-  _updateToNewPosition(newPosition) {
-    this.setState({ position: newPosition })
-    this._contentScrollView.scrollTo({x:0, y:0, animated:false})
   }
 
   render() {
     return (
-      <ScrollView scrollEnabled={(this.state.position === 'relative')} ref={sv => this._contentScrollView = sv}>
+      <ScrollView ref={sv => this._contentScrollView = sv}>
       <InfoPlanel date="TUESDAY 12 JULY" lastUpdatedTime="10:44am" />
-      <FullScreen onPositionChange={(newPosition) => {
-        this._updateToNewPosition(newPosition)
-       }}>
-       {(this.state.position === 'relative') ?
-       <View>
-       <View style={{paddingLeft: 20, paddingTop: 10, paddingBottom: 15, paddingRight: 20}}>
-         <Text style={{fontSize: 22, fontWeight: '700', paddingBottom: 15}}>
-         Sturgeon: Tackling 'unnacceptable' child poverty a priority
-         </Text>
-         <Meta time="34 MIN" region="GLASGOW & WEST"/>
-       </View>
-       <Image
-       source={{uri: 'https://files.stv.tv/imagebase/461/w768/461445-daniel-roche-left-ramona-marquez-and-tyger-drew-honey-in-2011.jpg'}}
-       style={{width: 375, height: 211}}
-       />
-       </View>
-         :
-        <View style={{paddingLeft: 20, paddingTop: 10, paddingBottom: 15, paddingRight: 20}}>
-          <Text style={{fontSize: 22, fontWeight: '700', paddingBottom: 15}}>
-          Sturgeon: Tackling 'unnacceptable' child poverty a priority
-          </Text>
-          <Text style={{fontSize: 16, paddingBottom: 15}}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean id pretium mi, sit amet volutpat sem. </Text>
-          <Image
-          source={{uri: 'https://files.stv.tv/imagebase/461/w768/461445-daniel-roche-left-ramona-marquez-and-tyger-drew-honey-in-2011.jpg'}}
-          style={{width: 375, height: 211, marginLeft: -20}}/>
-          <View style={{backgroundColor: 'white', height: 550}}><Text style={{paddingTop: 15, fontSize: 16}}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean id pretium mi, sit amet volutpat sem. Nullam gravida orci at rhoncus tincidunt. Etiam ullamcorper tortor et mattis tempor. Mauris auctor sed mauris sit amet maximus. Praesent porta neque ut turpis tempor vulputate. In feugiat, mi eu tincidunt euismod, nunc mi efficitur velit, sit amet ultrices dui diam et ex. Ut luctus bibendum justo in porttitor. </Text></View>
-        </View> }
-      </FullScreen>
+      <Article article={{
+          title: "Sturgeon: Tackling 'unnacceptable' child poverty a priority",
+          imageURL: 'https://files.stv.tv/imagebase/461/w768/461445-daniel-roche-left-ramona-marquez-and-tyger-drew-honey-in-2011.jpg',
+          region: "GLASGOW & WEST",
+          time: "34 MIN",
+          type: "bigimage"
+      }} />
       <Divider />
-
-      <FullScreen onPositionChange={(newPosition) => {
-        this._updateToNewPosition(newPosition)
-       }}>
-       {(this.state.position === 'relative') ?
-        <View style={{flexDirection: 'row', paddingLeft: 20, paddingRight: 20}}>
-        <Image
-          source={{uri: 'https://files.stv.tv/imagebase/13/w768/13179-crash-at-busy-city-roundabout.jpg'}}
-          style={{width: 150, height: 84, marginRight: 10}}
-          />
-          <View style={{flex: 1}}>
-            <Text style={{fontSize: 14, fontWeight: '500', paddingBottom: 5}}>
-            Murder probe after elderly man stabbed to death in street
-            </Text>
-            <Meta time="34 MIN" region="GLASGOW & WEST"/>
-          </View>
-        </View> :
-        <View style={{paddingLeft: 20, paddingRight: 20}}>
-          <Text style={{fontSize: 20, fontWeight: '700', paddingBottom: 10, paddingTop: 10}}>
-          Murder probe after elderly man stabbed to death in street
-          </Text>
-          <Text style={{fontSize: 16}}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean id pretium mi, sit amet volutpat sem. </Text>
-          <Image
-            source={{uri: 'https://files.stv.tv/imagebase/13/w768/13179-crash-at-busy-city-roundabout.jpg'}}
-            style={{height: 211, marginTop: 10, marginLeft: -20, marginRight: -20}}
-            />
-            <Text style={{paddingTop: 10, fontSize: 16}}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean id pretium mi, sit amet volutpat sem. Nullam gravida orci at rhoncus tincidunt. Etiam ullamcorper tortor et mattis tempor. Mauris auctor sed mauris sit amet maximus. Praesent porta neque ut turpis tempor vulputate. In feugiat, mi eu tincidunt euismod, nunc mi efficitur velit, sit amet ultrices dui diam et ex. Ut luctus bibendum justo in porttitor. </Text>
-            <Text style={{paddingTop: 10, fontSize: 16}}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean id pretium mi, sit amet volutpat sem. Nullam gravida orci at rhoncus tincidunt. Etiam ullamcorper tortor et mattis tempor. Mauris auctor sed mauris sit amet maximus. Praesent porta neque ut turpis tempor vulputate. In feugiat, mi eu tincidunt euismod, nunc mi efficitur velit, sit amet ultrices dui diam et ex. Ut luctus bibendum justo in porttitor. </Text>
-        </View>
-      }
-      </FullScreen>
+      <Article article={{
+          title: "Murder probe after elderly man stabbed to death in street",
+          imageURL: 'https://files.stv.tv/imagebase/13/w768/13179-crash-at-busy-city-roundabout.jpg',
+          region: "GLASGOW & WEST",
+          time: "34 MIN",
+          type: "smallimage"
+      }} />
       <Divider />
 
       <View style={{paddingLeft: 20, paddingRight: 20}}>
