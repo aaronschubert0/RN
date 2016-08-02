@@ -173,7 +173,8 @@ const FullscreenOnPress = React.createClass({
               <View
                 style={{
                   ...this.getInnerModalStyle(),
-                  overflow: 'hidden'
+                  overflow: 'hidden',
+                  flex: 1
                 }}
                 {...this._panResponder.panHandlers}
               >
@@ -206,7 +207,7 @@ class Article extends Component {
     const heading = (
       <View
         key="heading"
-        style={{ flex: 3 }}
+        style={{ flex: 1 }}
       >
         <Text style={{
           fontSize: expanded ? 22 : 14,
@@ -237,7 +238,8 @@ class Article extends Component {
       <View
         style={{
           flexDirection: expanded ? 'column' : 'row',
-          marginBottom: 10
+          marginBottom: 10,
+          alignItems: 'center'
         }}
       >
         {children}
