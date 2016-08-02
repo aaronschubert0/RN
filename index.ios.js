@@ -1,5 +1,5 @@
-import React, { Component, PropTypes } from 'react'
-import { AppRegistry, View, Text, Image, ScrollView, TouchableWithoutFeedback, Animated, StyleSheet, Modal } from 'react-native'
+import React, { Component, PropTypes, findNodeHandle } from 'react'
+import { AppRegistry, View, Text, Image, ScrollView, TouchableWithoutFeedback, Animated, StyleSheet, Modal, LayoutAnimation, NativeMethodsMixin, PanResponder } from 'react-native'
 import { TabNavigator, Tab } from './js/TabNavigator/'
 const Metro = () => {
   return (
@@ -48,246 +48,270 @@ var styles = StyleSheet.create({
     height: 595,
     width: 375
   }
-});
+})
 
-class FullscreenOnPress extends Component {
 
-  static propTypes = {
+
+const FullscreenOnPress = React.createClass({
+  mixins: [NativeMethodsMixin],
+  propTypes: {
     fullscreenProp: PropTypes.string.isRequired
-  }
-
-  constructor(props) {
-    super(props)
-    this.state = {
-      scale: new Animated.Value(1),
-      fullscreen: false
+  },
+  componentWillUpdate () {
+    LayoutAnimation.easeInEaseOut()
+  },
+  getInitialState () {
+    return {
+      floating: false,
+      originalViewHidden: false,
+      fullscreen: false,
+      fadeAnim: new Animated.Value(0)
     }
-  }
+  },
+  componentWillMount () {
+    this._panResponder = PanResponder.create({
+      onStartShouldSetPanResponder: this._handleStartShouldSetPanResponder,
+      onMoveShouldSetPanResponder: this._handleMoveShouldSetPanResponder,
+      onPanResponderGrant: this._handlePanResponderGrant,
+      onPanResponderMove: this._handlePanResponderMove,
+      onPanResponderRelease: this._handlePanResponderEnd,
+      onPanResponderTerminate: this._handlePanResponderEnd,
+    })
+  },
+  getInnerModalStyle () {
+    const { originalViewMeasurements } = this.state
+    const { pX: left, pY: top, width, height } = originalViewMeasurements
+    return this.state.fullscreen ? { top: 25 } : {
+      position: 'absolute',
+      top,
+      left,
+      width,
+      height
+    }
+  },
+  getBackgroundModalStyle () {
+    return {
+      position: 'absolute',
+      top: 0,
+      right: 0,
+      bottom: 0,
+      left: 0,
+      backgroundColor: 'white',
+      opacity: this.state.fadeAnim
+    }
+  },
+  onTouchablePress () {
+    this.setState({ floating: true }, () => {
+      requestAnimationFrame(() => {
+      })
+      Animated.timing(
+        this.state.fadeAnim,
+        { toValue: 1, duration: 200 }
+      ).start()
+      requestAnimationFrame(() => {
+        this.setState({ fullscreen: true, originalViewHidden: true })
+      })
+    })
+  },
+  _handleStartShouldSetPanResponder () {
+    return true
+  },
+  _handleMoveShouldSetPanResponder () {
+    return true
+  },
+  _handlePanResponderGrant () {
+    this.setState({ fullscreen: false }, () => {
+      Animated.timing(
+        this.state.fadeAnim,
+        { toValue: 0, duration: 200 }
+      ).start()
+      setTimeout(() => {
+        this.setState({
+          floating: false,
+          originalViewHidden: false
+        })
+      }, 500)
+    })
+  },
+  _handlePanResponderMove (e, gestureState) {
+    console.log(gestureState)
+  },
+  _handlePanResponderEnd () {
 
+  },
   render() {
-    const { fullscreen } = this.state
+    const { floating, fullscreen, originalViewHidden } = this.state
     const { children, fullscreenProp } = this.props
-    return (
-      <Animated.View style={[(this.state.position === 'absolute') ? styles.visible : styles.notVisible, { height: this.state.height, transform: [{scale: this.state.scale}] }]}>
-      <TouchableWithoutFeedback disabled={fullscreen} onPress={() => {this.setState({ fullscreen: true })}}>
-      {(!fullscreen) ?
-        <View>
-          {React.Children.map(children, (child, index) => {
-            return React.cloneElement(child, {
-              [fullscreenProp]: fullscreen,
-              key: index
-            })
-          })}
-        </View>
-        :
-        <Modal style={{paddingBottom: 15, backgroundColor: 'white', paddingTop: 20}}>
-        {React.Children.map(children, (child, index) => {
-            return React.cloneElement(child, {
-              [fullscreenProp]: fullscreen,
-              key: index
-            })
-          })}
-        </Modal>
-      }
+    const clonedChildren = React.Children.map(
+      children,
+      (child, index) => React.cloneElement(child, {
+        [fullscreenProp]: fullscreen,
+        key: index
+      })
+    )
 
+    return (
+      <TouchableWithoutFeedback
+        onPress={() => {
+          this.refs.originalView.measure((x, y, width, height, pX, pY) => {
+            const measurements = { x, y, width, height, pX, pY }
+            this.setState({ originalViewMeasurements: measurements }, this.onTouchablePress)
+          })
+        }}
+      >
+        <View
+          ref="originalView"
+          style={{
+            opacity: originalViewHidden ? 0 : 1
+          }}
+        >
+          {children}
+
+          {floating && (
+            <Modal transparent={true}>
+              <Animated.View style={this.getBackgroundModalStyle()}></Animated.View>
+              <View
+                style={{
+                  ...this.getInnerModalStyle(),
+                  overflow: 'hidden'
+                }}
+                {...this._panResponder.panHandlers}
+              >
+                {clonedChildren}
+              </View>
+            </Modal>
+          )}
+        </View>
       </TouchableWithoutFeedback>
-    </Animated.View>
     )
   }
-}
+})
 
-const InfoPlanel = ({ date, lastUpdatedTime }) => {
-  return (
-    <View>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingLeft: 20, paddingRight: 20, paddingTop: 15, paddingBottom: 5 }}>
-        <Text style={{fontSize: 12, fontWeight: '600', color: 'gray'}}>{date}</Text>
-        <Text style={{fontSize: 12, color: 'gray'}}>{'Last updated ' + lastUpdatedTime}</Text>
+class Article extends Component {
+  render () {
+    const { article, expanded } = this.props
+    const image = (
+      <Image
+        key="image"
+        source={{ uri: article.imageURL }}
+        style={{
+          // flex: 1,
+          width: expanded ? 375 : 150,
+          height: expanded ? 211 : 84,
+          marginRight: expanded ? 0 : 10
+        }}
+      />
+    )
+
+    const heading = (
+      <View
+        key="heading"
+        style={{ flex: 3 }}
+      >
+        <Text style={{
+          fontSize: expanded ? 22 : 14,
+          fontWeight: expanded ? '700' : '500',
+          paddingBottom: expanded ? 15 : 5
+        }}>
+          {article.title}
+        </Text>
+        <Meta time={article.time} region={article.region}/>
       </View>
-      <Divider />
-    </View>
-  )
-}
+    )
 
-class FadeInImage extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      opacity: new Animated.Value(0)
-    }
-  }
+    const body = (
+      <Text key="body" style={{ color: 'white', fontSize: 20 }}>
+        Hello World!
+      </Text>
+    )
 
-  onLoad() {
-    Animated.timing(this.state.opacity, {
-      toValue: 1,
-      duration: 500
-    }).start()
-  }
+    const children = expanded ? [
+      heading,
+      image
+    ] : [
+      image,
+      heading
+    ]
 
-  render() {
-    console.log('render')
     return (
       <View
-        style={this.props.style}
-        backgroundColor={'white'}
+        style={{
+          flexDirection: expanded ? 'column' : 'row',
+          marginBottom: 10
+        }}
       >
-        <Animated.Image
-          style={[{opacity: this.state.opacity, width: this.props.style.width, height: this.props.style.height }]}
-          source={this.props.source}
-          onLoad={this.onLoad.bind(this)} />
+        {children}
       </View>
     )
   }
-
 }
-
-const FullScreenArticle = ({title, imageURL}) => {
-  return (
-    <ScrollView style={{paddingLeft: 20, paddingRight: 20, paddingTop: 15}}>
-      <Text style={{fontSize: 20, fontWeight: '700', paddingBottom: 10, paddingTop: 10}}>
-        {title}
-      </Text>
-      <Text style={{fontSize: 16}}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean id pretium mi, sit amet volutpat sem. </Text>
-      <FadeInImage
-        source={{uri: imageURL}}
-        style={{height: 211, marginTop: 10, marginLeft: -20, marginRight: -20}}
-        />
-        <Text style={{marginTop: 10, fontSize: 16}}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean id pretium mi, sit amet volutpat sem. Nullam gravida orci at rhoncus tincidunt. Etiam ullamcorper tortor et mattis tempor. Mauris auctor sed mauris sit amet maximus. Praesent porta neque ut turpis tempor vulputate. In feugiat, mi eu tincidunt euismod, nunc mi efficitur velit, sit amet ultrices dui diam et ex. Ut luctus bibendum justo in porttitor. </Text>
-        <Text style={{paddingTop: 10, fontSize: 16}}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean id pretium mi, sit amet volutpat sem. Nullam gravida orci at rhoncus tincidunt. Etiam ullamcorper tortor et mattis tempor. Mauris auctor sed mauris sit amet maximus. Praesent porta neque ut turpis tempor vulputate. In feugiat, mi eu tincidunt euismod, nunc mi efficitur velit, sit amet ultrices dui diam et ex. Ut luctus bibendum justo in porttitor. </Text>
-    </ScrollView>
-  )
-}
-
-const BigImageArticlePreview = ({ title, imageURL, region, time }) => {
-  return (
-    <View>
-    <View style={{paddingLeft: 20, paddingTop: 10, paddingBottom: 15, paddingRight: 20}}>
-      <Text style={{fontSize: 22, fontWeight: '700', paddingBottom: 15}}>
-      {title}
-      </Text>
-      <Meta time={time} region={region}/>
-    </View>
-    <Image
-    source={{uri: imageURL}}
-    style={{width: 375, height: 211}}
-    />
-    </View>
-  )
-}
-
-const SmallImageArticlePreview = ({ title, imageURL, region, time }) => {
-  return (
-    <View style={{flexDirection: 'row', paddingLeft: 20, paddingRight: 20}}>
-    <Image
-      source={{uri: imageURL}}
-      style={{width: 150, height: 84, marginRight: 10}}
-      />
-      <View style={{flex: 1}}>
-        <Text style={{fontSize: 14, fontWeight: '500', paddingBottom: 5}}>
-        {title}
-        </Text>
-        <Meta time={time} region={region}/>
-      </View>
-    </View>
-  )
-}
-
-const ArticleSwitcher = ({ fullscreen, article, children }) => {
-  return (
-    fullscreen ? <FullScreenArticle title={article.title} imageURL={article.imageURL}/> : children
-  )
-}
-
-const Article = ({ article }) => {
-
-  function _previewForArticleType(type) {
-    if (type === 'bigimage') {
-      return <BigImageArticlePreview title={article.title} imageURL={article.imageURL} region={article.region} time={article.time}/>
-    } else if (type === 'smallimage') {
-      return <SmallImageArticlePreview title={article.title} imageURL={article.imageURL} region={article.region} time={article.time}/>
-    }
-  }
-
-  return (
-    <View>
-      <FullscreenOnPress fullscreenProp="fullscreen">
-        <ArticleSwitcher article={article}>
-          {_previewForArticleType(article.type)}
-        </ArticleSwitcher>
-      </FullscreenOnPress>
-    </View>
-  )
-}
-
-
 
 class One extends Component {
-
-  constructor(props) {
-    super(props)
-  }
 
   render() {
     return (
       <ScrollView ref={sv => this._contentScrollView = sv}>
-      <InfoPlanel date="TUESDAY 12 JULY" lastUpdatedTime="10:44am" />
-      <Article article={{
-          title: "Sturgeon: Tackling 'unnacceptable' child poverty a priority",
-          imageURL: 'https://files.stv.tv/imagebase/461/w768/461445-daniel-roche-left-ramona-marquez-and-tyger-drew-honey-in-2011.jpg',
-          region: "GLASGOW & WEST",
-          time: "34 MIN",
-          type: "bigimage"
-      }} />
-      <Divider />
-      <Article article={{
-          title: "Murder probe after elderly man stabbed to death in street",
-          imageURL: 'https://files.stv.tv/imagebase/13/w768/13179-crash-at-busy-city-roundabout.jpg',
-          region: "GLASGOW & WEST",
-          time: "34 MIN",
-          type: "smallimage"
-      }} />
-      <Divider />
-
-      <View style={{paddingLeft: 20, paddingRight: 20}}>
-        <Text style={{fontSize: 14, fontWeight: '500', paddingBottom: 5}}>
-        Man accussed of murdering police officer to appear in court
-        </Text>
-        <Meta time="34 MIN" region="GLASGOW & WEST"/>
-      </View>
-      <Divider />
-
-      <View style={{paddingLeft: 20, paddingTop: 10, paddingBottom: 15, paddingRight: 20}}>
-        <Text style={{fontSize: 22, fontWeight: '700', paddingBottom: 15}}>
-        Sturgeon: Tackling 'unnacceptable' child poverty a priority
-        </Text>
-        <Meta time="34 MIN" region="GLASGOW & WEST"/>
-      </View>
-      <Image
-      source={{uri: 'https://files.stv.tv/imagebase/461/w768/461445-daniel-roche-left-ramona-marquez-and-tyger-drew-honey-in-2011.jpg'}}
-      style={{width: 375, height: 211}}/>
-      <Divider />
-
-      <View style={{flexDirection: 'row', paddingLeft: 20, paddingRight: 20}}>
-      <Image
-        source={{uri: 'https://files.stv.tv/imagebase/13/w768/13179-crash-at-busy-city-roundabout.jpg'}}
-        style={{width: 150, height: 84, marginRight: 10}}
-        />
-        <View style={{flex: 1}}>
-          <Text style={{fontSize: 14, fontWeight: '500', paddingBottom: 5}}>
-          Murder probe after elderly man stabbed to death in street
-          </Text>
-          <Meta time="34 MIN" region="GLASGOW & WEST"/>
-        </View>
-      </View>
-      <Divider />
-
-      <View style={{paddingLeft: 20, paddingRight: 20}}>
-        <Text style={{fontSize: 14, fontWeight: '500', paddingBottom: 5}}>
-        Man accussed of murdering police officer to appear in court
-        </Text>
-        <Meta time="34 MIN" region="GLASGOW & WEST"/>
-      </View>
-      <Divider />
-
+        <InfoPanel date="TUESDAY 12 JULY" lastUpdatedTime="10:44am" />
+        <FullscreenOnPress fullscreenProp="expanded">
+          <Article
+            article={{
+              title: "Sturgeon: Tackling 'unnacceptable' child poverty a priority",
+              imageURL: 'https://files.stv.tv/imagebase/461/w768/461445-daniel-roche-left-ramona-marquez-and-tyger-drew-honey-in-2011.jpg',
+              region: "GLASGOW & WEST",
+              time: "34 MIN"
+            }}
+          />
+        </FullscreenOnPress>
+        <FullscreenOnPress fullscreenProp="expanded">
+          <Article
+            article={{
+              title: "Sturgeon: Tackling 'unnacceptable' child poverty a priority",
+              imageURL: 'https://files.stv.tv/imagebase/461/w768/461445-daniel-roche-left-ramona-marquez-and-tyger-drew-honey-in-2011.jpg',
+              region: "GLASGOW & WEST",
+              time: "34 MIN"
+            }}
+          />
+        </FullscreenOnPress>
+        <FullscreenOnPress fullscreenProp="expanded">
+          <Article
+            article={{
+              title: "Sturgeon: Tackling 'unnacceptable' child poverty a priority",
+              imageURL: 'https://files.stv.tv/imagebase/461/w768/461445-daniel-roche-left-ramona-marquez-and-tyger-drew-honey-in-2011.jpg',
+              region: "GLASGOW & WEST",
+              time: "34 MIN"
+            }}
+          />
+        </FullscreenOnPress>
+        <FullscreenOnPress fullscreenProp="expanded">
+          <Article
+            article={{
+              title: "Sturgeon: Tackling 'unnacceptable' child poverty a priority",
+              imageURL: 'https://files.stv.tv/imagebase/461/w768/461445-daniel-roche-left-ramona-marquez-and-tyger-drew-honey-in-2011.jpg',
+              region: "GLASGOW & WEST",
+              time: "34 MIN"
+            }}
+          />
+        </FullscreenOnPress>
+        <FullscreenOnPress fullscreenProp="expanded">
+          <Article
+            article={{
+              title: "Sturgeon: Tackling 'unnacceptable' child poverty a priority",
+              imageURL: 'https://files.stv.tv/imagebase/461/w768/461445-daniel-roche-left-ramona-marquez-and-tyger-drew-honey-in-2011.jpg',
+              region: "GLASGOW & WEST",
+              time: "34 MIN"
+            }}
+          />
+        </FullscreenOnPress>
+        <FullscreenOnPress fullscreenProp="expanded">
+          <Article
+            article={{
+              title: "Sturgeon: Tackling 'unnacceptable' child poverty a priority",
+              imageURL: 'https://files.stv.tv/imagebase/461/w768/461445-daniel-roche-left-ramona-marquez-and-tyger-drew-honey-in-2011.jpg',
+              region: "GLASGOW & WEST",
+              time: "34 MIN"
+            }}
+          />
+        </FullscreenOnPress>
       </ScrollView>
     )
   }
@@ -331,3 +355,15 @@ const Eight = () => {
 }
 
 AppRegistry.registerComponent('Metro', () => Metro)
+
+const InfoPanel = ({ date, lastUpdatedTime }) => {
+  return (
+    <View>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingLeft: 20, paddingRight: 20, paddingTop: 15, paddingBottom: 5 }}>
+        <Text style={{fontSize: 12, fontWeight: '600', color: 'gray'}}>{date}</Text>
+        <Text style={{fontSize: 12, color: 'gray'}}>{'Last updated ' + lastUpdatedTime}</Text>
+      </View>
+      <Divider />
+    </View>
+  )
+}
