@@ -19,11 +19,11 @@ const Metro = () => {
   )
 }
 
-const Meta = ({ time, region }) => {
+const Meta = ({ time, section, style }) => {
   return (
-    <View style={{flexDirection: 'row'}}>
-      <Text style={{fontSize: 11, fontWeight: '500', color: '#09b4ff'}}>{time + ' / '}</Text>
-      <Text style={{fontSize: 11, fontWeight: '500', color: 'gray'}}>{region}</Text>
+    <View style={[ style, {flexDirection: 'row'} ]}>
+      { time ? <Text style={{fontSize: 11, fontWeight: '500', color: '#09b4ff'}}>{time + ' / '}</Text> : null }
+      { section ? <Text style={{fontSize: 11, fontWeight: '500', color: 'gray'}}>{section}</Text> :  null }
     </View>
   )
 }
@@ -157,14 +157,14 @@ const FullScreenArticle = ({title, imageURL}) => {
   )
 }
 
-const BigImageArticlePreview = ({ title, imageURL, region, time }) => {
+const BigImageArticlePreview = ({ title, imageURL, section, time }) => {
   return (
     <View>
     <View style={{paddingLeft: 20, paddingTop: 10, paddingBottom: 15, paddingRight: 20}}>
       <Text style={{fontSize: 22, fontWeight: '700', paddingBottom: 15}}>
       {title}
       </Text>
-      <Meta time={time} region={region}/>
+      <Meta time={time} section={section}/>
     </View>
     <Image
     source={{uri: imageURL}}
@@ -174,18 +174,76 @@ const BigImageArticlePreview = ({ title, imageURL, region, time }) => {
   )
 }
 
-const SmallImageArticlePreview = ({ title, imageURL, region, time }) => {
+const SmallImageArticlePreview = ({ title, imageURL, section, time }) => {
   return (
     <View style={{flexDirection: 'row', paddingLeft: 20, paddingRight: 20}}>
     <Image
       source={{uri: imageURL}}
-      style={{width: 150, height: 84, marginRight: 10}}
+      style={{width: 100, height: 56, marginRight: 10}}
       />
       <View style={{flex: 1}}>
         <Text style={{fontSize: 14, fontWeight: '500', paddingBottom: 5}}>
         {title}
         </Text>
-        <Meta time={time} region={region}/>
+        <Meta time={time} section={section}/>
+      </View>
+    </View>
+  )
+}
+
+const OpinionArticlePreview = ({ author, quote, section }) => {
+  return (
+    <View style={{ paddingLeft: 20, paddingRight: 20, paddingTop: 5 }}>
+        <Text style={{ fontFamily: 'TimesNewRomanPS-BoldItalicMT', fontSize: 18, color: '#09b4ff', paddingBottom: 10}}>
+        {author + ' / '}
+        <Text style={{ fontSize: 18, color: 'black', flex: 1 }}>
+          {quote}
+        </Text>
+        </Text>
+      <Meta section={section} style={{ paddingBottom: 5}}/>
+    </View>
+  )
+}
+
+const LiveArticlePreview = ({ title, imageURL, section }) => {
+  return (
+    <View style={{flexDirection: 'row', paddingLeft: 20, paddingRight: 20}}>
+    <Image
+      source={{uri: imageURL}}
+      style={{width: 100, height: 56, marginRight: 10}}
+      />
+      <View style={{flex: 1}}>
+        <Text style={{fontSize: 14, fontWeight: '500', paddingBottom: 5}}>
+        {title}
+        </Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={{ padding: 1.5, paddingLeft: 7, paddingRight: 7, borderRadius: 2, backgroundColor: '#09b4ff', marginRight: 5}}>
+            <Text style={{ color: 'white', fontSize: 10, fontWeight: '600' }}>{'LIVE'}</Text>
+          </View>
+          <Meta section={section}/>
+        </View>
+      </View>
+    </View>
+  )
+}
+
+const NativeAdPreview = ({ title, imageURL, section }) => {
+  return (
+    <View style={{flexDirection: 'row', paddingLeft: 20, paddingRight: 20}}>
+    <Image
+      source={{uri: imageURL}}
+      style={{width: 100, height: 56, marginRight: 10}}
+      />
+      <View style={{flex: 1}}>
+        <Text style={{fontSize: 14, fontWeight: '500', paddingBottom: 5}}>
+        {title}
+        </Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={{ padding: 1.5, paddingLeft: 7, paddingRight: 7, borderRadius: 2, backgroundColor: '#F4DB43', marginRight: 5}}>
+            <Text style={{ color: 'white', fontSize: 10, fontWeight: '600' }}>{'SPONSORED'}</Text>
+          </View>
+          <Meta section={section}/>
+        </View>
       </View>
     </View>
   )
@@ -201,9 +259,15 @@ const Article = ({ article }) => {
 
   function _previewForArticleType(type) {
     if (type === 'bigimage') {
-      return <BigImageArticlePreview title={article.title} imageURL={article.imageURL} region={article.region} time={article.time}/>
+      return <BigImageArticlePreview title={article.title} imageURL={article.imageURL} section={article.section} time={article.time}/>
     } else if (type === 'smallimage') {
-      return <SmallImageArticlePreview title={article.title} imageURL={article.imageURL} region={article.region} time={article.time}/>
+      return <SmallImageArticlePreview title={article.title} imageURL={article.imageURL} section={article.section} time={article.time}/>
+    } else if (type === 'opinion') {
+      return <OpinionArticlePreview author={article.author} quote={article.quote} section={article.section} />
+    } else if (type === 'live') {
+      return <LiveArticlePreview title={article.title} imageURL={article.imageURL} section={article.section} />
+    } else if (type === 'ad') {
+      return <NativeAdPreview title={article.title} imageURL={article.imageURL}/>
     }
   }
 
@@ -222,18 +286,14 @@ const Article = ({ article }) => {
 
 class One extends Component {
 
-  constructor(props) {
-    super(props)
-  }
-
   render() {
     return (
-      <ScrollView ref={sv => this._contentScrollView = sv}>
+      <ScrollView>
       <InfoPlanel date="TUESDAY 12 JULY" lastUpdatedTime="10:44am" />
       <Article article={{
           title: "Sturgeon: Tackling 'unnacceptable' child poverty a priority",
           imageURL: 'https://files.stv.tv/imagebase/461/w768/461445-daniel-roche-left-ramona-marquez-and-tyger-drew-honey-in-2011.jpg',
-          region: "GLASGOW & WEST",
+          section: "GLASGOW & WEST",
           time: "34 MIN",
           type: "bigimage"
       }} />
@@ -241,9 +301,33 @@ class One extends Component {
       <Article article={{
           title: "Murder probe after elderly man stabbed to death in street",
           imageURL: 'https://files.stv.tv/imagebase/13/w768/13179-crash-at-busy-city-roundabout.jpg',
-          region: "GLASGOW & WEST",
+          section: "GLASGOW & WEST",
           time: "34 MIN",
           type: "smallimage"
+      }} />
+      <Divider />
+
+      <Article article={{
+          author: "Melanie Reid",
+          quote: "We need leaders like Theresa May and Nicola Sturgeon in a world gone mad",
+          section: "POLITICS",
+          type: "opinion"
+      }} />
+      <Divider />
+
+      <Article article={{
+          title: "North Sea Oil workers announce 48-hours offshore strike",
+          imageURL: 'https://files.stv.tv/imagebase/431/w768/431609-generic-stock-coastguard-rescue-helicopter-rescuegeneric.jpg',
+          section: "ABERDEEN & NORTH",
+          type: "live"
+      }} />
+      <Divider />
+
+      <Article article={{
+          title: "5 Guys opens up in Glasgow City Centre",
+          imageURL: 'https://bloximages.chicago2.vip.townnews.com/heraldextra.com/content/tncms/assets/v3/editorial/2/c1/2c1b327d-5967-5d22-bc0e-6e61971f19cb/51416f5fe66d5.image.jpg',
+          section: "LOCAL",
+          type: "ad"
       }} />
       <Divider />
 
@@ -251,7 +335,7 @@ class One extends Component {
         <Text style={{fontSize: 14, fontWeight: '500', paddingBottom: 5}}>
         Man accussed of murdering police officer to appear in court
         </Text>
-        <Meta time="34 MIN" region="GLASGOW & WEST"/>
+        <Meta time="34 MIN" section="GLASGOW & WEST"/>
       </View>
       <Divider />
 
@@ -259,7 +343,7 @@ class One extends Component {
         <Text style={{fontSize: 22, fontWeight: '700', paddingBottom: 15}}>
         Sturgeon: Tackling 'unnacceptable' child poverty a priority
         </Text>
-        <Meta time="34 MIN" region="GLASGOW & WEST"/>
+        <Meta time="34 MIN" section="GLASGOW & WEST"/>
       </View>
       <Image
       source={{uri: 'https://files.stv.tv/imagebase/461/w768/461445-daniel-roche-left-ramona-marquez-and-tyger-drew-honey-in-2011.jpg'}}
@@ -275,7 +359,7 @@ class One extends Component {
           <Text style={{fontSize: 14, fontWeight: '500', paddingBottom: 5}}>
           Murder probe after elderly man stabbed to death in street
           </Text>
-          <Meta time="34 MIN" region="GLASGOW & WEST"/>
+          <Meta time="34 MIN" section="GLASGOW & WEST"/>
         </View>
       </View>
       <Divider />
@@ -284,7 +368,7 @@ class One extends Component {
         <Text style={{fontSize: 14, fontWeight: '500', paddingBottom: 5}}>
         Man accussed of murdering police officer to appear in court
         </Text>
-        <Meta time="34 MIN" region="GLASGOW & WEST"/>
+        <Meta time="34 MIN" section="GLASGOW & WEST"/>
       </View>
       <Divider />
 
