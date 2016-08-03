@@ -34,68 +34,6 @@ const Divider = () => {
   )
 }
 
-var styles = StyleSheet.create({
-  notVisible: {
-  },
-  visible: {
-    top: 0,
-  },
-  scrollNotVisible: {
-
-  },
-  scrollVisible: {
-    paddingBottom: 10,
-    height: 595,
-    width: 375
-  }
-});
-
-class FullscreenOnPress extends Component {
-
-  static propTypes = {
-    fullscreenProp: PropTypes.string.isRequired
-  }
-
-  constructor(props) {
-    super(props)
-    this.state = {
-      scale: new Animated.Value(1),
-      fullscreen: false
-    }
-  }
-
-  render() {
-    const { fullscreen } = this.state
-    const { children, fullscreenProp } = this.props
-    return (
-      <Animated.View style={[(this.state.position === 'absolute') ? styles.visible : styles.notVisible, { height: this.state.height, transform: [{scale: this.state.scale}] }]}>
-      <TouchableWithoutFeedback disabled={fullscreen} onPress={() => {this.setState({ fullscreen: true })}}>
-      {(!fullscreen) ?
-        <View>
-          {React.Children.map(children, (child, index) => {
-            return React.cloneElement(child, {
-              [fullscreenProp]: fullscreen,
-              key: index
-            })
-          })}
-        </View>
-        :
-        <Modal style={{paddingBottom: 15, backgroundColor: 'white', paddingTop: 20}}>
-        {React.Children.map(children, (child, index) => {
-            return React.cloneElement(child, {
-              [fullscreenProp]: fullscreen,
-              key: index
-            })
-          })}
-        </Modal>
-      }
-
-      </TouchableWithoutFeedback>
-    </Animated.View>
-    )
-  }
-}
-
 const InfoPlanel = ({ date, lastUpdatedTime }) => {
   return (
     <View>
@@ -105,55 +43,6 @@ const InfoPlanel = ({ date, lastUpdatedTime }) => {
       </View>
       <Divider />
     </View>
-  )
-}
-
-class FadeInImage extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      opacity: new Animated.Value(0)
-    }
-  }
-
-  onLoad() {
-    Animated.timing(this.state.opacity, {
-      toValue: 1,
-      duration: 500
-    }).start()
-  }
-
-  render() {
-    console.log('render')
-    return (
-      <View
-        style={this.props.style}
-        backgroundColor={'white'}
-      >
-        <Animated.Image
-          style={[{opacity: this.state.opacity, width: this.props.style.width, height: this.props.style.height }]}
-          source={this.props.source}
-          onLoad={this.onLoad.bind(this)} />
-      </View>
-    )
-  }
-
-}
-
-const FullScreenArticle = ({title, imageURL}) => {
-  return (
-    <ScrollView style={{paddingLeft: 20, paddingRight: 20, paddingTop: 15}}>
-      <Text style={{fontSize: 20, fontWeight: '700', paddingBottom: 10, paddingTop: 10}}>
-        {title}
-      </Text>
-      <Text style={{fontSize: 16}}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean id pretium mi, sit amet volutpat sem. </Text>
-      <FadeInImage
-        source={{uri: imageURL}}
-        style={{height: 211, marginTop: 10, marginLeft: -20, marginRight: -20}}
-        />
-        <Text style={{marginTop: 10, fontSize: 16}}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean id pretium mi, sit amet volutpat sem. Nullam gravida orci at rhoncus tincidunt. Etiam ullamcorper tortor et mattis tempor. Mauris auctor sed mauris sit amet maximus. Praesent porta neque ut turpis tempor vulputate. In feugiat, mi eu tincidunt euismod, nunc mi efficitur velit, sit amet ultrices dui diam et ex. Ut luctus bibendum justo in porttitor. </Text>
-        <Text style={{paddingTop: 10, fontSize: 16}}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean id pretium mi, sit amet volutpat sem. Nullam gravida orci at rhoncus tincidunt. Etiam ullamcorper tortor et mattis tempor. Mauris auctor sed mauris sit amet maximus. Praesent porta neque ut turpis tempor vulputate. In feugiat, mi eu tincidunt euismod, nunc mi efficitur velit, sit amet ultrices dui diam et ex. Ut luctus bibendum justo in porttitor. </Text>
-    </ScrollView>
   )
 }
 
@@ -251,7 +140,7 @@ const NativeAdPreview = ({ title, imageURL, section }) => {
 
 const ArticleSwitcher = ({ fullscreen, article, children }) => {
   return (
-    fullscreen ? <FullScreenArticle title={article.title} imageURL={article.imageURL}/> : children
+    fullscreen ? null : children
   )
 }
 
@@ -273,11 +162,9 @@ const Article = ({ article }) => {
 
   return (
     <View>
-      <FullscreenOnPress fullscreenProp="fullscreen">
-        <ArticleSwitcher article={article}>
-          {_previewForArticleType(article.type)}
-        </ArticleSwitcher>
-      </FullscreenOnPress>
+      <ArticleSwitcher article={article}>
+        {_previewForArticleType(article.type)}
+      </ArticleSwitcher>
     </View>
   )
 }
