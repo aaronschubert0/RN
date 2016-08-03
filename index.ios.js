@@ -1,23 +1,37 @@
 import React, { Component, PropTypes } from 'react'
 import { AppRegistry, View, Text, Image, ScrollView, TouchableWithoutFeedback, Animated, StyleSheet, Modal } from 'react-native'
+import codePush from "react-native-code-push";
+
 import { TabNavigator, Tab } from './js/TabNavigator/'
 import { Meta, Divider, InfoPanel } from './js/components/'
-const Metro = () => {
-  return (
-    <View style={{ marginTop: 20 }}>
-      <TabNavigator renderDistance={4}>
-        <Tab title="Breaking News" component={One} />
-        <Tab title="Top Stories" component={Two} />
-        <Tab title="Glasgow / West" component={Three} />
-        <Tab title="Four" component={Four} />
-        <Tab title="Five" component={Five} />
-        <Tab title="Six" component={Six} />
-        <Tab title="Seven" component={Seven} />
-        <Tab title="Eight" component={Eight} />
-      </TabNavigator>
-    </View>
+class Metro extends Component {
 
-  )
+  componentDidMount() {
+    codePush.sync({
+       updateDialog: {
+        appendReleaseDescription: true,
+        descriptionPrefix: "\n\nChange log:\n"
+       },
+       installMode: codePush.InstallMode.IMMEDIATE
+    });
+  }
+
+  render() {
+    return (
+      <View style={{ marginTop: 20 }}>
+        <TabNavigator renderDistance={4}>
+          <Tab title="Breaking News" component={One} />
+          <Tab title="Top Stories" component={Two} />
+          <Tab title="Glasgow / West" component={Three} />
+          <Tab title="Four" component={Four} />
+          <Tab title="Five" component={Five} />
+          <Tab title="Six" component={Six} />
+          <Tab title="Seven" component={Seven} />
+          <Tab title="Eight" component={Eight} />
+        </TabNavigator>
+      </View>
+    )
+  }
 }
 
 const BigImageArticlePreview = ({ title, imageURL, section, time }) => {
@@ -274,5 +288,5 @@ const Eight = () => {
     <One />
   )
 }
-
+Metro = codePush(Metro);
 AppRegistry.registerComponent('Metro', () => Metro)
