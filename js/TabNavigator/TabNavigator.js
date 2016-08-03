@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { View, Text, ScrollView, TouchableOpacity, Animated, Dimensions, AsyncStorage } from 'react-native'
+import codePush from "react-native-code-push";
 import Tab from './Tab'
 
 const getDeviceWidth = () => Dimensions.get('window').width
@@ -27,6 +28,15 @@ class ReleaseTrack extends Component {
   async setReleaseTrack(value) {
     try {
       await AsyncStorage.setItem('releaseTrack', value);
+      const key = (value === 'staging') ? 'reFjGdnegvtFBdh3W42YdX6ZPO0z4JXBRC9Ob' : 'oBXsootj-gxKFdCfk8sqlTAZCC1u4JXBRC9Ob'
+      codePush.sync({
+         updateDialog: {
+          appendReleaseDescription: true,
+          descriptionPrefix: "\n\nChange log:\n"
+         },
+         installMode: codePush.InstallMode.IMMEDIATE,
+         deploymentKey: key
+      })
     } catch (error) {
       // Error saving data
     }
@@ -370,12 +380,12 @@ export default class TabNavigator extends Component {
         </ScrollView>
         <TouchableOpacity style={{
           position: 'absolute',
-          right: 0,
+          right: 15,
           top: 10,
-          width: 50,
+          width: 60,
           height: 50
         }} onPress={() => this.setState({settingsVisible: !this.state.settingsVisible}) }>
-          <Text style={{fontWeight: '600'}}>S</Text>
+          <Text style={{fontWeight: '600'}}>Settings</Text>
         </TouchableOpacity>
       </View>
     )

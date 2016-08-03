@@ -1,29 +1,32 @@
 import React, { Component, PropTypes } from 'react'
-import { AppRegistry, View, Text, Image, ScrollView, TouchableWithoutFeedback, Animated, StyleSheet, Modal } from 'react-native'
-// import codePush from "react-native-code-push";
+import { AppRegistry, View, Text, Image, ScrollView, TouchableWithoutFeedback, Animated, StyleSheet, Modal, AsyncStorage } from 'react-native'
+import codePush from "react-native-code-push";
 
 import { TabNavigator, Tab } from './js/TabNavigator/'
 import { Meta, Divider, InfoPanel } from './js/components/'
 class Metro extends Component {
 
   componentDidMount() {
-    // codePush.sync({
-    //    updateDialog: {
-    //     appendReleaseDescription: true,
-    //     descriptionPrefix: "\n\nChange log:\n"
-    //    },
-    //    installMode: codePush.InstallMode.IMMEDIATE
-    // });
+    this.syncCodePush()
   }
 
   async syncCodePush() {
     try {
       const value = await AsyncStorage.getItem('releaseTrack');
       if (value !== null){
+        console.log('Success ', value)
         const key = (value === 'staging') ? 'reFjGdnegvtFBdh3W42YdX6ZPO0z4JXBRC9Ob' : 'oBXsootj-gxKFdCfk8sqlTAZCC1u4JXBRC9Ob'
-        codePush.sync({ deploymentKey: key })
+        codePush.sync({
+           updateDialog: {
+            appendReleaseDescription: true,
+            descriptionPrefix: "\n\nChange log:\n"
+           },
+           installMode: codePush.InstallMode.IMMEDIATE,
+           deploymentKey: key
+        })
       }
     } catch (error) {
+      console.log('Error')
       // Error retrieving data
     }
   }
