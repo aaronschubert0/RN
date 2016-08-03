@@ -94,7 +94,7 @@ export default class TabNavigator extends Component {
     const endTab = tabKeys[Math.round(endIndex)]
     const progressTowardsNextTab = 1 - (endIndex - currentIndex)
 
-    if (!endTab) return
+    if (!endTab || !currentTab || !startTab) return
 
     this.state.tabs[endTab].color.setValue(
       direction === 'left'
@@ -188,7 +188,7 @@ export default class TabNavigator extends Component {
                   const { x, width, height, } = e.nativeEvent.layout
                   const { initialTab } = this.props
                   this._tabMeasurements[title] = { left: x, right: x + width, width, height }
-                  
+
                   if (initialTab && title === initialTab) {
                     this._contentScrollView.scrollTo({ x: index * getDeviceWidth(), animated: false })
                     this._updateVisibleTab(title)
