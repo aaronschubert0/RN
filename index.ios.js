@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { AppRegistry, View, Text, Image, ScrollView, TouchableWithoutFeedback, Animated, StyleSheet, Modal } from 'react-native'
 import { TabNavigator, Tab } from './js/TabNavigator/'
+import { Meta, Divider, InfoPanel } from './js/components/'
 const Metro = () => {
   return (
     <View style={{ marginTop: 20 }}>
@@ -16,33 +17,6 @@ const Metro = () => {
       </TabNavigator>
     </View>
 
-  )
-}
-
-const Meta = ({ time, section, style }) => {
-  return (
-    <View style={[ style, {flexDirection: 'row'} ]}>
-      { time ? <Text style={{fontSize: 11, fontWeight: '500', color: '#09b4ff'}}>{time + ' / '}</Text> : null }
-      { section ? <Text style={{fontSize: 11, fontWeight: '500', color: 'gray'}}>{section}</Text> :  null }
-    </View>
-  )
-}
-
-const Divider = () => {
-  return (
-    <View style={{flex: 1, backgroundColor: '#D8D8D8', height: 0.5, marginLeft: 15, marginRight: 15, marginTop: 10, marginBottom: 10}} />
-  )
-}
-
-const InfoPlanel = ({ date, lastUpdatedTime }) => {
-  return (
-    <View>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingLeft: 20, paddingRight: 20, paddingTop: 15, paddingBottom: 5 }}>
-        <Text style={{fontSize: 12, fontWeight: '600', color: 'gray'}}>{date}</Text>
-        <Text style={{fontSize: 12, color: 'gray'}}>{'Last updated ' + lastUpdatedTime}</Text>
-      </View>
-      <Divider />
-    </View>
   )
 }
 
@@ -176,7 +150,7 @@ class One extends Component {
   render() {
     return (
       <ScrollView>
-      <InfoPlanel date="TUESDAY 12 JULY" lastUpdatedTime="10:44am" />
+      <InfoPanel date="TUESDAY 12 JULY" lastUpdatedTime="10:44am" />
       <Article article={{
           title: "Sturgeon: Tackling 'unnacceptable' child poverty a priority",
           imageURL: 'https://files.stv.tv/imagebase/461/w768/461445-daniel-roche-left-ramona-marquez-and-tyger-drew-honey-in-2011.jpg',
