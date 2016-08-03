@@ -1,9 +1,60 @@
 import React, { Component, PropTypes } from 'react'
-import { View, Text, ScrollView, TouchableOpacity, Animated, Dimensions } from 'react-native'
+import { View, Text, ScrollView, TouchableOpacity, Animated, Dimensions, AsyncStorage } from 'react-native'
 import Tab from './Tab'
 
 const getDeviceWidth = () => Dimensions.get('window').width
 
+class ReleaseTrack extends Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      releaseTrack: ''
+    }
+  }
+
+  async getReleaseTrack() {
+    try {
+      const value = await AsyncStorage.getItem('releaseTrack');
+      if (value !== null){
+        this.setState({releaseTrack: value})
+      }
+    } catch (error) {
+      // Error retrieving data
+    }
+  }
+
+  async setReleaseTrack(value) {
+    try {
+      await AsyncStorage.setItem('releaseTrack', value);
+    } catch (error) {
+      // Error saving data
+    }
+    this.setState({releaseTrack: value})
+  }
+
+  componentWillMount() {
+    this.getReleaseTrack()
+  }
+
+  render() {
+    return (
+      <View style={{ height: 150, alignItems: 'center', justifyContent: 'center' }}>
+        <Text>Release Track</Text>
+        <Text style={{ fontSize: 8, paddingBottom: 10 }}>{'You are on ' + this.state.releaseTrack}</Text>
+          <TouchableOpacity style={{ paddingBottom: 10, alignSelf: 'flex-start', paddingLeft: 20, paddingRight: 20}} onPress={() => this.setReleaseTrack('production')}>
+            <Text style={{color: this.state.releaseTrack === 'production' ? 'rgb(48, 192, 255)' : 'rgb(188, 188, 188)', fontWeight: '700'}}>Production</Text>
+            <Text style={{ fontSize: 10 }}>The production release track is the most stable release track, and will only contain features that have been fully tested by STV.</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={{alignSelf: 'flex-start', paddingLeft: 20, paddingRight: 20}} onPress={() => this.setReleaseTrack('staging')}>
+            <Text style={{color: this.state.releaseTrack === 'staging' ? 'rgb(48, 192, 255)' : 'rgb(188, 188, 188)', fontWeight: '700'}}>Staging</Text>
+            <Text style={{ fontSize: 10 }}>The staging release track is the least stable release track, it contains the latest changes made by the development team, and has NOT been tested by STV (QA) yet.</Text>
+          </TouchableOpacity>
+      </View>
+    )
+  }
+
+}
 
 export default class TabNavigator extends Component {
   static propTypes = {
@@ -19,7 +70,8 @@ export default class TabNavigator extends Component {
     this.state = {
       tabUnderlineLeft: new Animated.Value(0),
       tabUnderlineWidth: new Animated.Value(0),
-      tabTextColor: new Animated.Value(0)
+      tabTextColor: new Animated.Value(0),
+      settingsVisible: false
     }
 
     this._tabMeasurements = {}
@@ -188,13 +240,16 @@ export default class TabNavigator extends Component {
 
     return (
       <View>
+        {this.state.settingsVisible ?
+          <ReleaseTrack />
+        :
         <ScrollView
           ref={sv => this._tabsScrollView = sv}
           horizontal
           directionalLockEnabled
           showsHorizontalScrollIndicator={false}
           automaticallyAdjustContentInsets={false}
-          style={{height: 50}}
+          style={{height: 80}}
           onScroll={e => {
             this._tabsScrollViewPosition = e.nativeEvent.contentOffset.x
             // console.log(e.nativeEvent.contentOffset.x)
@@ -209,34 +264,33 @@ export default class TabNavigator extends Component {
           contentOffset={{ x: -50 }}
           scrollEnabled={false}
         >
-          {Object.keys(tabs).map(key => tabs[key]).map(({ color, title }, index) => {
-            // console.log(color, title)
-            return (
-              <TouchableOpacity
-                key={index}
-                style={{ padding: 15, paddingBottom: 35 }}
-                onLayout={e => {
-                  const { x, width, height, } = e.nativeEvent.layout
-                  this._tabMeasurements[title] = { left: x, right: x + width, width, height }
-                }}
-                onPress={() => {
-                  const index = tabKeys.indexOf(title)
-                  this._tabWasPressed = title
-                  this._contentScrollView.scrollTo({ x: index * getDeviceWidth() })
-                }}
-              >
-                <Animated.Text style={{
-                  fontSize: 12,
-                  fontWeight: '700',
-                  color: color.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: ['rgb(188, 188, 188)', 'rgb(48, 192, 255)']
-                  })
-                }}>{title.toUpperCase()}</Animated.Text>
-              </TouchableOpacity>
-            )
-
-          })}
+        {Object.keys(tabs).map(key => tabs[key]).map(({ color, title }, index) => {
+          // console.log(color, title)
+          return (
+            <TouchableOpacity
+              key={index}
+              style={{ padding: 15, paddingTop: 45 }}
+              onLayout={e => {
+                const { x, width, height, } = e.nativeEvent.layout
+                this._tabMeasurements[title] = { left: x, right: x + width, width, height }
+              }}
+              onPress={() => {
+                const index = tabKeys.indexOf(title)
+                this._tabWasPressed = title
+                this._contentScrollView.scrollTo({ x: index * getDeviceWidth() })
+              }}
+            >
+              <Animated.Text style={{
+                fontSize: 12,
+                fontWeight: '700',
+                color: color.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: ['rgb(188, 188, 188)', 'rgb(48, 192, 255)']
+                })
+              }}>{title.toUpperCase()}</Animated.Text>
+            </TouchableOpacity>
+          )
+        })}
           <View style={{
             position: 'absolute',
             height: 0.5,
@@ -254,11 +308,13 @@ export default class TabNavigator extends Component {
             width: this.state.tabUnderlineWidth,
           }}></Animated.View>
         </ScrollView>
+        }
         <ScrollView
           ref={sv => this._contentScrollView = sv}
           horizontal
           pagingEnabled
           bounces={true}
+          scrollEnabled={!this.state.settingsVisible}
           directionalLockEnabled
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
@@ -312,7 +368,15 @@ export default class TabNavigator extends Component {
           })}
 
         </ScrollView>
-
+        <TouchableOpacity style={{
+          position: 'absolute',
+          right: 0,
+          top: 10,
+          width: 50,
+          height: 50
+        }} onPress={() => this.setState({settingsVisible: !this.state.settingsVisible}) }>
+          <Text style={{fontWeight: '600'}}>S</Text>
+        </TouchableOpacity>
       </View>
     )
   }
