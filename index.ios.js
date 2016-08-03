@@ -4,7 +4,7 @@ import { TabNavigator, Tab } from './js/TabNavigator/'
 const Metro = () => {
   return (
     <View style={{ marginTop: 20 }}>
-      <TabNavigator renderDistance={4}>
+      <TabNavigator initialTab="Top Stories" renderDistance={4}>
         <Tab title="Breaking News" component={One} />
         <Tab title="Top Stories" component={Two} />
         <Tab title="Glasgow / West" component={Three} />

@@ -9,6 +9,7 @@ export default class TabNavigator extends Component {
   static propTypes = {
     renderDistance: PropTypes.number,
     actions: PropTypes.object,
+    initialTab: PropTypes.string,
     state: PropTypes.shape({
       tabs: PropTypes.object,
       visibleTab: PropTypes.string
@@ -80,18 +81,33 @@ export default class TabNavigator extends Component {
     const currentIndex = scrollValue / getDeviceWidth()
     const direction = currentIndex > startIndex ? 'right' : 'left'
 
-    const endIndex = direction === 'right'
-      ? Math.ceil(currentIndex)
-      : Math.floor(currentIndex)
+    const endIndex = direction === 'left'
+      ? Math.floor(currentIndex)
+      : Math.ceil(currentIndex)
+
 
     const startTab = tabKeys[Math.round(startIndex)]
-    const nextTab = tabKeys[Math.round(endIndex)]
+    const currentTab = tabKeys[
+      direction === 'left' ? Math.ceil(currentIndex) : Math.floor(currentIndex)
+    ]
+    const endTab = tabKeys[Math.round(endIndex)]
     const progressTowardsNextTab = 1 - (endIndex - currentIndex)
 
-    this.state.tabs[nextTab].color.setValue(direction === 'left' ? 1-(progressTowardsNextTab-1) : progressTowardsNextTab)
-    this.state.tabs[startTab].color.setValue(direction === 'left' ? -(1-progressTowardsNextTab) : 1-progressTowardsNextTab)
-    // console.log(startIndex, currentIndex)
-    // console.log(`start: ${startIndex}, current: ${currentIndex}, end: ${endIndex}`)
+    if (!endTab) return
+
+    this.state.tabs[endTab].color.setValue(
+      direction === 'left'
+        ? 1-(progressTowardsNextTab-1)
+        : progressTowardsNextTab
+    )
+
+    if (currentTab !== endTab) {
+      this.state.tabs[currentTab].color.setValue(
+        direction === 'left'
+          ? -(1-progressTowardsNextTab)
+          : 1-progressTowardsNextTab
+      )
+    }
 
     function indexToScrollPosition (index, measurements) {
       const lowerTab = tabKeys[Math.floor(index)]
@@ -121,54 +137,6 @@ export default class TabNavigator extends Component {
     this.state.tabUnderlineLeft.setValue(currentIndicatorLeft)
     this.state.tabUnderlineWidth.setValue(currentIndicatorWidth)
   }
-
-  // onContentScrollValueChange (scrollValue) {
-  //   if (!this.state.contentScrollViewIsScrolling) {
-  //     this._tabsScrollViewRestingPosition = this._tabsScrollViewPosition
-  //     this._contentScrollViewIsScrolling = true
-  //     this.setState({
-  //       contentScrollViewIsScrolling: true
-  //     })
-  //   }
-  //   const { visibleTab, tabs } = this._readState()
-  //   const indicatorPosition = scrollValue / getDeviceWidth()
-  //   const tabKeys = Object.keys(tabs)
-  //   const visibleTabIndex = tabKeys.indexOf(visibleTab)
-  //   const direction = (indicatorPosition < visibleTabIndex) ? 'left' : 'right'
-  //
-  //   let percentage = indicatorPosition - Math.floor(indicatorPosition) || 1
-  //   if (direction === 'left') percentage = 1 - percentage
-  //
-  //   const lastTab = (direction === 'right')
-  //     ? tabKeys[Math.floor(indicatorPosition)]
-  //     : tabKeys[Math.ceil(indicatorPosition)]
-  //
-  //   const nextTab = (direction === 'right')
-  //     ? tabKeys[Math.ceil(indicatorPosition)]
-  //     : tabKeys[Math.floor(indicatorPosition)]
-  //
-  //   const nextTabsScrollViewPosition = this._tabMeasurements[nextTab].left - (getDeviceWidth()/2) + (this._tabMeasurements[nextTab].width/2)
-  //   const currentScrollViewPosition = (
-  //     nextTabsScrollViewPosition - (
-  //       (nextTabsScrollViewPosition - this._tabsScrollViewRestingPosition)
-  //       *
-  //       (1 - percentage === 1 ? 0 : 1 - percentage)
-  //     )
-  //   )
-  //
-  //   this._tabsScrollView.scrollTo({
-  //     x: currentScrollViewPosition,
-  //     animated: false
-  //   })
-  //
-  //   const lastTabMeasurements = this._tabMeasurements[lastTab]
-  //   const nextTabMeasurments = this._tabMeasurements[nextTab]
-  //   const newLeft = nextTabMeasurments.left - ((nextTabMeasurments.left - lastTabMeasurements.left) * (1 - percentage))
-  //   const newWidth = nextTabMeasurments.width - ((nextTabMeasurments.width - lastTabMeasurements.width) * (1 - percentage))
-  //
-  //   this.state.tabUnderlineLeft.setValue(newLeft)
-  //   this.state.tabUnderlineWidth.setValue(newWidth)
-  // }
 
   render () {
     const state = this._readState()
@@ -217,7 +185,18 @@ export default class TabNavigator extends Component {
                 style={{ padding: 15, paddingBottom: 35 }}
                 onLayout={e => {
                   const { x, width, height, } = e.nativeEvent.layout
+                  const { initialTab } = this.props
                   this._tabMeasurements[title] = { left: x, right: x + width, width, height }
+                  if (initialTab && title === initialTab) {
+                    this._contentScrollView.scrollTo({ x: index * getDeviceWidth(), animated: false })
+                    this._updateVisibleTab(title)
+
+                  } else if (!initialTab && index === 0) {
+                    this.state.tabUnderlineLeft.setValue(x)
+                    this.state.tabUnderlineWidth.setValue(width)
+                    this.state.tabs[title].color.setValue(1)
+                    this._updateVisibleTab(title)
+                  }
                 }}
                 onPress={() => {
                   const index = tabKeys.indexOf(title)
