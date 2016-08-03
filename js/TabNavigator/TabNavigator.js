@@ -20,7 +20,8 @@ export default class TabNavigator extends Component {
     this.state = {
       tabUnderlineLeft: new Animated.Value(0),
       tabUnderlineWidth: new Animated.Value(0),
-      tabTextColor: new Animated.Value(0)
+      tabTextColor: new Animated.Value(0),
+      tabOpacity: new Animated.Value(0)
     }
 
     this._tabMeasurements = {}
@@ -187,6 +188,7 @@ export default class TabNavigator extends Component {
                   const { x, width, height, } = e.nativeEvent.layout
                   const { initialTab } = this.props
                   this._tabMeasurements[title] = { left: x, right: x + width, width, height }
+                  
                   if (initialTab && title === initialTab) {
                     this._contentScrollView.scrollTo({ x: index * getDeviceWidth(), animated: false })
                     this._updateVisibleTab(title)
@@ -196,6 +198,13 @@ export default class TabNavigator extends Component {
                     this.state.tabUnderlineWidth.setValue(width)
                     this.state.tabs[title].color.setValue(1)
                     this._updateVisibleTab(title)
+                  }
+
+                  if (Object.keys(this._tabMeasurements).length === Object.keys(tabs).length) {
+                    Animated.timing(
+                      this.state.tabOpacity,
+                      { toValue: 1, duration: 300 }
+                    ).start()
                   }
                 }}
                 onPress={() => {
@@ -214,7 +223,6 @@ export default class TabNavigator extends Component {
                 }}>{title.toUpperCase()}</Animated.Text>
               </TouchableOpacity>
             )
-
           })}
           <View style={{
             position: 'absolute',
@@ -231,6 +239,18 @@ export default class TabNavigator extends Component {
             bottom: 0,
             left: this.state.tabUnderlineLeft,
             width: this.state.tabUnderlineWidth,
+          }}></Animated.View>
+          <Animated.View style={{
+            position: 'absolute',
+            backgroundColor: 'white',
+            top: 0,
+            right: 0,
+            bottom: 0,
+            left: 0,
+            opacity: this.state.tabOpacity.interpolate({
+              inputRange: [0, 1],
+              outputRange: [1, 0]
+            })
           }}></Animated.View>
         </ScrollView>
         <ScrollView
