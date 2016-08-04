@@ -24,7 +24,7 @@ const BigImageArticlePreview = ({ title, imageURL, section, time }) => {
   return (
     <View>
     <View style={{paddingLeft: 20, paddingTop: 10, paddingBottom: 15, paddingRight: 20}}>
-      <Text style={{fontSize: 22, fontWeight: '700', paddingBottom: 15}}>
+      <Text style={{fontSize: 22, fontWeight: '700', fontFamily: 'SourceSansPro-Bold', paddingBottom: 15}}>
       {title}
       </Text>
       <Meta time={time} section={section}/>

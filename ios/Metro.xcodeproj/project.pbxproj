@@ -25,6 +25,7 @@
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		92B3E2AD1D53850C0051998D /* SourceSansPro-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 92B3E2AB1D53850C0051998D /* SourceSansPro-Bold.ttf */; };
 		92B3E2AE1D53850D0051998D /* SourceSansPro-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 92B3E2AC1D53850C0051998D /* SourceSansPro-Regular.ttf */; };
+		92B3E2BB1D538BCA0051998D /* Merriweather-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 92B3E2BA1D538BCA0051998D /* Merriweather-BlackItalic.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -131,6 +132,7 @@
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		92B3E2AB1D53850C0051998D /* SourceSansPro-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceSansPro-Bold.ttf"; sourceTree = "<group>"; };
 		92B3E2AC1D53850C0051998D /* SourceSansPro-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceSansPro-Regular.ttf"; sourceTree = "<group>"; };
+		92B3E2BA1D538BCA0051998D /* Merriweather-BlackItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Merriweather-BlackItalic.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -315,6 +317,7 @@
 		92B3E2B91D5385130051998D /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
+				92B3E2BA1D538BCA0051998D /* Merriweather-BlackItalic.ttf */,
 				92B3E2AB1D53850C0051998D /* SourceSansPro-Bold.ttf */,
 				92B3E2AC1D53850C0051998D /* SourceSansPro-Regular.ttf */,
 			);
@@ -522,6 +525,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				92B3E2BB1D538BCA0051998D /* Merriweather-BlackItalic.ttf in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				92B3E2AD1D53850C0051998D /* SourceSansPro-Bold.ttf in Resources */,
 				92B3E2AE1D53850D0051998D /* SourceSansPro-Regular.ttf in Resources */,
