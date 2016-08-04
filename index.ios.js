@@ -9,11 +9,11 @@ const Metro = () => {
         <Tab title="Breaking News" component={One} />
         <Tab title="Top Stories" component={Two} />
         <Tab title="Glasgow / West" component={Three} />
-        <Tab title="Four" component={Four} />
-        <Tab title="Five" component={Five} />
-        <Tab title="Six" component={Six} />
-        <Tab title="Seven" component={Seven} />
-        <Tab title="Eight" component={Eight} />
+        <Tab title="UK" component={Four} />
+        <Tab title="International" component={Five} />
+        <Tab title="Politics" component={Six} />
+        <Tab title="Features" component={Seven} />
+        <Tab title="Entertainment" component={Eight} />
       </TabNavigator>
     </View>
 
