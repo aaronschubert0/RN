@@ -242,7 +242,7 @@ export default class TabNavigator extends Component {
             left: this.state.tabUnderlineLeft,
             width: this.state.tabUnderlineWidth,
           }}></Animated.View>
-          <Animated.View style={{
+          <Animated.View pointerEvents={'none'} style={{
             position: 'absolute',
             backgroundColor: 'white',
             top: 0,
