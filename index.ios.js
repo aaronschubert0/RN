@@ -58,7 +58,7 @@ const OpinionArticlePreview = ({ author, quote, section }) => {
   return (
     <View style={{ paddingLeft: 20, paddingRight: 20, paddingTop: 5 }}>
         <Text style={{ fontFamily: 'Merriweather-BlackItalic', fontSize: 18, color: '#09b4ff', paddingBottom: 10}}>
-        {author + ' / '}
+        {author + '  /  '}
         <Text style={{ fontSize: 18, color: 'black', flex: 1 }}>
           {quote}
         </Text>
@@ -76,7 +76,7 @@ const LiveArticlePreview = ({ title, imageURL, section }) => {
       style={{width: 100, height: 56, marginRight: 10}}
       />
       <View style={{flex: 1}}>
-        <Text style={{fontSize: 14, fontWeight: '500', fontFamily:'SourceSansPro-Regular', paddingBottom: 5}}>
+        <Text style={{fontSize: 14, fontFamily:'SourceSansPro-Regular', paddingBottom: 5}}>
         {title}
         </Text>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -98,7 +98,7 @@ const NativeAdPreview = ({ title, imageURL, section }) => {
       style={{width: 100, height: 56, marginRight: 10}}
       />
       <View style={{flex: 1}}>
-        <Text style={{fontSize: 14, fontWeight: '500', fontFamily:'SourceSansPro-Regular', paddingBottom: 5}}>
+        <Text style={{fontSize: 14, fontFamily:'SourceSansPro-Regular', paddingBottom: 5}}>
         {title}
         </Text>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
