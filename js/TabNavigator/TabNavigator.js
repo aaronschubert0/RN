@@ -75,6 +75,7 @@ export default class TabNavigator extends Component {
   }
 
   onContentScrollValueChange (scrollValue) {
+    console.log(scrollValue)
     const { visibleTab, tabs } = this._readState()
     const tabKeys = Object.keys(tabs)
 
@@ -175,7 +176,6 @@ export default class TabNavigator extends Component {
             this._tabsScrollViewRestingPosition = 0
           }}
           scrollEventThrottle={16}
-          contentOffset={{ x: -50 }}
           scrollEnabled={false}
         >
           {Object.keys(tabs).map(key => tabs[key]).map(({ color, title }, index) => {
@@ -185,6 +185,7 @@ export default class TabNavigator extends Component {
                 key={index}
                 style={{ padding: 15, paddingBottom: 35 }}
                 onLayout={e => {
+                  if (this._allTabsMeasured) return
                   const { x, width, height, } = e.nativeEvent.layout
                   const { initialTab } = this.props
                   this._tabMeasurements[title] = { left: x, right: x + width, width, height }
@@ -205,6 +206,7 @@ export default class TabNavigator extends Component {
                       this.state.tabOpacity,
                       { toValue: 1, duration: 300 }
                     ).start()
+                    this._allTabsMeasured = true
                   }
                 }}
                 onPress={() => {
@@ -277,7 +279,6 @@ export default class TabNavigator extends Component {
             this._contentScrollViewIsScrolling = true
           }}
           onTouchStartCapture={e => {
-            console.log('Touch captured. Scrolling=' + this._contentScrollViewIsScrolling)
             if (this._contentScrollViewIsScrolling) {
               this._contentScrollViewRestingPosition = this._contentScrollViewPosition
             }
