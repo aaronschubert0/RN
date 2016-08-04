@@ -357,7 +357,7 @@ export default class TabNavigator extends Component {
           }}
           scrollEventThrottle={16}
           style={{
-            height: 607
+            height: 577
           }}
         >
           {tabKeys.map((key, index) => {
