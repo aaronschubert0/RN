@@ -75,7 +75,6 @@ export default class TabNavigator extends Component {
   }
 
   onContentScrollValueChange (scrollValue) {
-    console.log(scrollValue)
     const { visibleTab, tabs } = this._readState()
     const tabKeys = Object.keys(tabs)
 
