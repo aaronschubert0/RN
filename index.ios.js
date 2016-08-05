@@ -1,6 +1,10 @@
 import React, { Component, PropTypes, findNodeHandle } from 'react'
-import { AppRegistry, View, Text, Image, ScrollView, TouchableWithoutFeedback, Animated, StyleSheet, Modal, LayoutAnimation, NativeMethodsMixin, PanResponder } from 'react-native'
+import { AppRegistry, View, Text, Image, ScrollView, TouchableWithoutFeedback, Animated, StyleSheet, Modal, LayoutAnimation, NativeMethodsMixin, PanResponder, UIManager } from 'react-native'
 import { TabNavigator, Tab } from './js/TabNavigator/'
+
+UIManager.setLayoutAnimationEnabledExperimental &&
+UIManager.setLayoutAnimationEnabledExperimental(true)
+
 const Metro = () => {
   return (
     <View style={{ marginTop: 20 }}>
