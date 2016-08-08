@@ -1,10 +1,12 @@
 import React, { Component, PropTypes } from 'react'
-import { AppRegistry, View, Text, Image, ScrollView, TouchableWithoutFeedback, Animated, StyleSheet, Modal } from 'react-native'
+import { AppRegistry, View, ViewPagerAndroid, Text, Image, ScrollView, TouchableWithoutFeedback, Animated, StyleSheet, Modal } from 'react-native'
 import { TabNavigator, Tab } from './js/TabNavigator/'
 import { Meta, Divider, InfoPanel } from './js/components/'
+
+
 const Metro = () => {
   return (
-    <View style={{ marginTop: 20 }}>
+    <View style={{ paddingTop: 20, backgroundColor: 'white' }}>
       <TabNavigator initialTab="Top Stories" renderDistance={4}>
         <Tab title="Breaking News" component={One} />
         <Tab title="Top Stories" component={Two} />

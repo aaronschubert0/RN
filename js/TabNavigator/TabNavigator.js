@@ -1,9 +1,10 @@
 import React, { Component, PropTypes } from 'react'
 import { View, Text, ScrollView, TouchableOpacity, Animated, Dimensions } from 'react-native'
+
 import Tab from './Tab'
+import ViewPager from '../ViewPager'
 
-const getDeviceWidth = () => Dimensions.get('window').width
-
+import getDeviceWidth from '../get-device-width'
 
 export default class TabNavigator extends Component {
   static propTypes = {
@@ -74,12 +75,11 @@ export default class TabNavigator extends Component {
     })
   }
 
-  onContentScrollValueChange (scrollValue) {
+  onContentScrollValueChange (currentIndex) {
     const { visibleTab, tabs } = this._readState()
     const tabKeys = Object.keys(tabs)
 
-    const startIndex = this._contentScrollViewRestingPosition / getDeviceWidth()
-    const currentIndex = scrollValue / getDeviceWidth()
+    const startIndex = this._contentScrollViewRestingPosition
     const direction = currentIndex > startIndex ? 'right' : 'left'
 
     const endIndex = direction === 'left'
@@ -190,7 +190,7 @@ export default class TabNavigator extends Component {
                   this._tabMeasurements[title] = { left: x, right: x + width, width, height }
 
                   if (initialTab && title === initialTab) {
-                    this._contentScrollView.scrollTo({ x: index * getDeviceWidth(), animated: false })
+                    this._contentScrollView.setPage(index, false)
                     this._updateVisibleTab(title)
 
                   } else if (!initialTab && index === 0) {
@@ -211,7 +211,7 @@ export default class TabNavigator extends Component {
                 onPress={() => {
                   const index = tabKeys.indexOf(title)
                   this._tabWasPressed = title
-                  this._contentScrollView.scrollTo({ x: index * getDeviceWidth() })
+                  this._contentScrollView.setPage(index)
                 }}
               >
                 <Animated.Text style={{
@@ -255,28 +255,24 @@ export default class TabNavigator extends Component {
             })
           }}></Animated.View>
         </ScrollView>
-        <ScrollView
+        <ViewPager
           ref={sv => this._contentScrollView = sv}
-          horizontal
-          pagingEnabled
-          bounces={true}
-          directionalLockEnabled
-          showsHorizontalScrollIndicator={false}
-          showsVerticalScrollIndicator={false}
-          automaticallyAdjustContentInsets={false}
-          onMomentumScrollEnd={(e) => {
-            const offsetX = e.nativeEvent.contentOffset.x
-            const page = Math.round(offsetX / getDeviceWidth())
+          onScrollStart={position => {
+            this._contentScrollViewIsScrolling = true
+          }}
+          onScroll={position => {
+            this._contentScrollViewPosition = position
+            this.onContentScrollValueChange(position)
+          }}
+          onScrollEnd={position => {
+            const page = Math.round(position)
             const visibleTabKey = tabKeys[page]
             const visibleTab = tabs[visibleTabKey]
-            this._updateVisibleTab(visibleTab.title)
-            this.setState({ contentScrollViewIsScrolling: false })
+
+            // this._updateVisibleTab(visibleTab.title)
 
             this._contentScrollViewIsScrolling = false
-            this._contentScrollViewRestingPosition = offsetX
-          }}
-          onMomentumScrollBegin={e => {
-            this._contentScrollViewIsScrolling = true
+            this._contentScrollViewRestingPosition = position
           }}
           onTouchStartCapture={e => {
             if (this._contentScrollViewIsScrolling) {
@@ -284,12 +280,6 @@ export default class TabNavigator extends Component {
             }
             return true
           }}
-          onScroll={e => {
-            const offsetX = e.nativeEvent.contentOffset.x
-            this._contentScrollViewPosition = offsetX
-            this.onContentScrollValueChange(offsetX)
-          }}
-          scrollEventThrottle={16}
           style={{
             height: 607
           }}
@@ -311,8 +301,7 @@ export default class TabNavigator extends Component {
             )
           })}
 
-        </ScrollView>
-
+        </ViewPager>
       </View>
     )
   }
