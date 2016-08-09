@@ -7,7 +7,7 @@ import { Meta, Divider, InfoPanel } from './js/components/'
 const Metro = () => {
   return (
     <View style={{ paddingTop: 20, backgroundColor: 'white' }}>
-      <TabNavigator initialTab="Top Stories" renderDistance={4}>
+      <TabNavigator initialTab="Top Stories" renderDistance={1}>
         <Tab title="Breaking News" component={One} />
         <Tab title="Top Stories" component={Two} />
         <Tab title="Glasgow / West" component={Three} />
@@ -150,6 +150,7 @@ const Article = ({ article }) => {
 class One extends Component {
 
   render() {
+    // return <View></View>
     return (
       <ScrollView>
       <InfoPanel date="TUESDAY 12 JULY" lastUpdatedTime="10:44am" />
