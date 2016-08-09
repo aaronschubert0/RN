@@ -1,11 +1,13 @@
 import React, { Component, PropTypes } from 'react'
-import { AppRegistry, View, Text, Image, ScrollView, TouchableWithoutFeedback, Animated, StyleSheet, Modal } from 'react-native'
+import { AppRegistry, View, ViewPagerAndroid, Text, Image, ScrollView, TouchableWithoutFeedback, Animated, StyleSheet, Modal } from 'react-native'
 import { TabNavigator, Tab } from './js/TabNavigator/'
 import { Meta, Divider, InfoPanel } from './js/components/'
+
+
 const Metro = () => {
   return (
-    <View style={{ marginTop: 20 }}>
-      <TabNavigator initialTab="Top Stories" renderDistance={4}>
+    <View style={{ paddingTop: 20, backgroundColor: 'white' }}>
+      <TabNavigator initialTab="Top Stories" renderDistance={1}>
         <Tab title="Breaking News" component={One} />
         <Tab title="Top Stories" component={Two} />
         <Tab title="Glasgow / West" component={Three} />
@@ -148,6 +150,7 @@ const Article = ({ article }) => {
 class One extends Component {
 
   render() {
+    // return <View></View>
     return (
       <ScrollView>
       <InfoPanel date="TUESDAY 12 JULY" lastUpdatedTime="10:44am" />
