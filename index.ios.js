@@ -58,7 +58,6 @@ const Article = ({ article }) => {
 class One extends Component {
 
   render() {
-    // return <View></View>
     return (
       <ScrollView>
       <InfoPanel date="TUESDAY 12 JULY" lastUpdatedTime="10:44am" />

@@ -3,6 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity, Animated, Dimensions, Interac
 
 import Tab from './Tab'
 import ViewPager from '../ViewPager'
+import { Divider, InfoPanel } from '../components/'
 
 import getDeviceWidth from '../get-device-width'
 
@@ -129,10 +130,10 @@ export default class TabNavigator extends Component {
             const page = Math.round(position)
             const visibleTabKey = tabKeys[page]
             const visibleTab = tabs[visibleTabKey]
-            //
-            // InteractionManager.runAfterInteractions(() => {
-            //   this._updateVisibleTab(visibleTab.title)
-            // })
+
+            InteractionManager.runAfterInteractions(() => {
+              this._updateVisibleTab(visibleTab.title)
+            })
 
             this._contentScrollViewIsScrolling = false
             this._contentScrollViewRestingPosition = position
@@ -149,10 +150,47 @@ export default class TabNavigator extends Component {
         >
           {tabKeys.map((key, index) => {
             const viewStyle = { width: getDeviceWidth() }
-            if (renderedTabKeys.indexOf(key) === -1 && false){
+            if (renderedTabKeys.indexOf(key) === -1){
               return (
-                <View key={`placeholder_${index}`} style={viewStyle}>
-                  <Text>(Tombstone)</Text>
+                <View key={`placeholder_${index}`} style={[viewStyle]}>
+                  <View>
+                    <InfoPanel date="LOADING"/>
+                    <View style={{ height: 15, marginLeft: 20, marginRight: 95, marginBottom: 20, backgroundColor: '#D8D8D8' }}></View>
+                    <View style={{ height: 15, marginLeft: 20, marginRight: 250, marginBottom: 20, backgroundColor: '#D8D8D8' }}></View>
+                    <View style={{ height: 15, marginLeft: 20, marginRight: 200, marginBottom: 20, backgroundColor: '#D8D8D8' }}></View>
+                    <View style={{ height: 180, backgroundColor: '#D8D8D8' }}></View>
+                  </View>
+                  <Divider />
+                  <View>
+                    <View style={{ flexDirection: 'row' }}>
+                    <View style={{ marginLeft: 20, width: 100, height: 56, backgroundColor: '#D8D8D8' }}></View>
+                    <View>
+                      <View style={{ height: 15, width: 200, marginLeft: 20, marginBottom: 20, backgroundColor: '#D8D8D8' }}></View>
+                      <View style={{ height: 15, width: 150, marginLeft: 20, backgroundColor: '#D8D8D8' }}></View>
+                    </View>
+                    </View>
+                  </View>
+                  <Divider />
+                  <View>
+                    <View style={{ flexDirection: 'row' }}>
+                    <View style={{ marginLeft: 20, width: 100, height: 56, backgroundColor: '#D8D8D8' }}></View>
+                    <View>
+                      <View style={{ height: 15, width: 200, marginLeft: 20, marginBottom: 20, backgroundColor: '#D8D8D8' }}></View>
+                      <View style={{ height: 15, width: 150, marginLeft: 20, backgroundColor: '#D8D8D8' }}></View>
+                    </View>
+                    </View>
+                  </View>
+                  <Divider />
+                  <View>
+                    <View style={{ flexDirection: 'row' }}>
+                    <View style={{ marginLeft: 20, width: 100, height: 56, backgroundColor: '#D8D8D8' }}></View>
+                    <View>
+                      <View style={{ height: 15, width: 200, marginLeft: 20, marginBottom: 20, backgroundColor: '#D8D8D8' }}></View>
+                      <View style={{ height: 15, width: 150, marginLeft: 20, backgroundColor: '#D8D8D8' }}></View>
+                    </View>
+                    </View>
+                  </View>
+                  <Divider />
                 </View>
               )
             }
