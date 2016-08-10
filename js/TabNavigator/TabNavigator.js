@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import { View, Text, ScrollView, TouchableOpacity, Animated, Dimensions, InteractionManager } from 'react-native'
 
 import Tab from './Tab'
-import Placeholder from './Placeholder'
+import Tombstones from './Tombstones'
 import ViewPager from '../ViewPager'
 import getDeviceWidth from '../get-device-width'
 
@@ -152,7 +152,7 @@ export default class TabNavigator extends Component {
             if (renderedTabKeys.indexOf(key) === -1){
               return (
                 <View key={`placeholder_${index}`} style={[viewStyle]}>
-                  <Placeholder />
+                  <Tombstones />
                 </View>
               )
             }

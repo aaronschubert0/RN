@@ -2,7 +2,7 @@ import React from 'react'
 import { View } from 'react-native'
 import { Divider, InfoPanel } from '../components/'
 
-const Placeholder = () => {
+const Tombstones = () => {
   return (
     <View>
       <View>
@@ -47,4 +47,4 @@ const Placeholder = () => {
   )
 }
 
-export default Placeholder
+export default Tombstones
