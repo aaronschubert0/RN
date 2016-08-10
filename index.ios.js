@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import { AppRegistry, View, ViewPagerAndroid, Text, Image, ScrollView, TouchableWithoutFeedback, Animated, StyleSheet, Modal } from 'react-native'
 import { TabNavigator, Tab } from './js/TabNavigator/'
 import { Meta, Divider, InfoPanel } from './js/components/'
-
+import { FeaturedImage, SmallImage, Opinion, Live, Sponsored } from './js/FeedItems/'
 
 const Metro = () => {
   return (
@@ -22,98 +22,6 @@ const Metro = () => {
   )
 }
 
-const BigImageArticlePreview = ({ title, imageURL, section, time }) => {
-  return (
-    <View>
-    <View style={{paddingLeft: 20, paddingTop: 10, paddingBottom: 15, paddingRight: 20}}>
-      <Text style={{fontSize: 22, fontWeight: '700', fontFamily: 'Source Sans Pro', paddingBottom: 15}}>
-      {title}
-      </Text>
-      <Meta time={time} section={section}/>
-    </View>
-    <Image
-    source={{uri: imageURL}}
-    style={{width: 375, height: 211}}
-    />
-    </View>
-  )
-}
-
-const SmallImageArticlePreview = ({ title, imageURL, section, time }) => {
-  return (
-    <View style={{flexDirection: 'row', paddingLeft: 20, paddingRight: 20}}>
-    <Image
-      source={{uri: imageURL}}
-      style={{width: 100, height: 56, marginRight: 10}}
-      />
-      <View style={{flex: 1}}>
-        <Text style={{fontSize: 16, fontFamily:'Source Sans Pro', fontWeight: '500', paddingBottom: 5}}>
-        {title}
-        </Text>
-        <Meta time={time} section={section}/>
-      </View>
-    </View>
-  )
-}
-
-const OpinionArticlePreview = ({ author, quote, section }) => {
-  return (
-    <View style={{ paddingLeft: 20, paddingRight: 20, paddingTop: 5 }}>
-        <Text style={{ fontFamily: 'Merriweather-BlackItalic', fontSize: 20, color: '#09b4ff', paddingBottom: 10}}>
-        {author + '  /  '}
-        <Text style={{ fontSize: 20, color: 'black', flex: 1 }}>
-          {quote}
-        </Text>
-        </Text>
-      <Meta section={section} style={{ paddingBottom: 5}}/>
-    </View>
-  )
-}
-
-const LiveArticlePreview = ({ title, imageURL, section }) => {
-  return (
-    <View style={{flexDirection: 'row', paddingLeft: 20, paddingRight: 20}}>
-    <Image
-      source={{uri: imageURL}}
-      style={{width: 100, height: 56, marginRight: 10}}
-      />
-      <View style={{flex: 1}}>
-        <Text style={{fontSize: 16, fontFamily:'Source Sans Pro', fontWeight: '500', paddingBottom: 5}}>
-        {title}
-        </Text>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <View style={{ padding: 1.5, paddingLeft: 7, paddingRight: 7, borderRadius: 2, backgroundColor: '#09b4ff', marginRight: 5}}>
-            <Text style={{ color: 'white', fontSize: 10, fontFamily:'Source Sans Pro', fontWeight: '500' }}>{'LIVE'}</Text>
-          </View>
-          <Meta section={section}/>
-        </View>
-      </View>
-    </View>
-  )
-}
-
-const NativeAdPreview = ({ title, imageURL, section }) => {
-  return (
-    <View style={{flexDirection: 'row', paddingLeft: 20, paddingRight: 20}}>
-    <Image
-      source={{uri: imageURL}}
-      style={{width: 100, height: 56, marginRight: 10}}
-      />
-      <View style={{flex: 1}}>
-        <Text style={{fontSize: 16, fontFamily:'Source Sans Pro', fontWeight: '500', paddingBottom: 5}}>
-        {title}
-        </Text>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <View style={{ padding: 1.5, paddingLeft: 7, paddingRight: 7, borderRadius: 2, backgroundColor: '#F4DB43', marginRight: 5}}>
-            <Text style={{ color: 'white', fontSize: 10, fontWeight: '500', fontFamily:'Source Sans Pro' }}>{'SPONSORED'}</Text>
-          </View>
-          <Meta section={section}/>
-        </View>
-      </View>
-    </View>
-  )
-}
-
 const ArticleSwitcher = ({ fullscreen, article, children }) => {
   return (
     fullscreen ? null : children
@@ -124,15 +32,15 @@ const Article = ({ article }) => {
 
   function _previewForArticleType(type) {
     if (type === 'bigimage') {
-      return <BigImageArticlePreview title={article.title} imageURL={article.imageURL} section={article.section} time={article.time}/>
+      return <FeaturedImage title={article.title} imageURL={article.imageURL} section={article.section} time={article.time}/>
     } else if (type === 'smallimage') {
-      return <SmallImageArticlePreview title={article.title} imageURL={article.imageURL} section={article.section} time={article.time}/>
+      return <SmallImage title={article.title} imageURL={article.imageURL} section={article.section} time={article.time}/>
     } else if (type === 'opinion') {
-      return <OpinionArticlePreview author={article.author} quote={article.quote} section={article.section} />
+      return <Opinion author={article.author} quote={article.quote} section={article.section} />
     } else if (type === 'live') {
-      return <LiveArticlePreview title={article.title} imageURL={article.imageURL} section={article.section} />
+      return <Live title={article.title} imageURL={article.imageURL} section={article.section} />
     } else if (type === 'ad') {
-      return <NativeAdPreview title={article.title} imageURL={article.imageURL}/>
+      return <Sponsored title={article.title} imageURL={article.imageURL}/>
     }
   }
 
