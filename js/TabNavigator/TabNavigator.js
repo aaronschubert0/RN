@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-import { View, Text, ScrollView, TouchableOpacity, Animated, Dimensions, InteractionManager } from 'react-native'
+import { Easing, View, Text, ScrollView, TouchableOpacity, Animated, Dimensions, InteractionManager } from 'react-native'
 
 import Tab from './Tab'
 import ViewPager from '../ViewPager'
@@ -218,19 +218,31 @@ class TabBar extends Component {
 
     if (!endTab || !currentTab || !startTab) return
 
+    function step (n, steps) {
+      return n - (((n * 100) % (100 / steps)) / 100)
+    }
 
-    tabs[endTab].opacity.setValue(
-      direction === 'left'
-        ? 1-(progressTowardsNextTab-1)
-        : progressTowardsNextTab
-    )
+    const endTabNextValue = direction === 'left' ? 1-(progressTowardsNextTab-1) : progressTowardsNextTab
+    const endTabNextSteppedValue = step(endTabNextValue, 2)
+    if (tabs[endTab].opacity._value !== endTabNextSteppedValue) {
+      requestAnimationFrame(() => {
+        tabs[endTab].opacity.setValue(
+          endTabNextSteppedValue
+        )
+      })
+    }
+
 
     if (currentTab !== endTab) {
-      tabs[currentTab].opacity.setValue(
-        direction === 'left'
-          ? -(1-progressTowardsNextTab)
-          : 1-progressTowardsNextTab
-      )
+      const currentTabNextValue = direction === 'left' ? -(1-progressTowardsNextTab) : 1-progressTowardsNextTab
+      const currentTabNextSteppedValue = step(currentTabNextValue, 2)
+      if (tabs[currentTab].opacity._value !== currentTabNextSteppedValue) {
+        requestAnimationFrame(() => {
+          tabs[currentTab].opacity.setValue(
+            currentTabNextSteppedValue
+          )
+        })
+      }
     }
 
     function indexToScrollPosition (index, measurements) {
@@ -274,7 +286,8 @@ class TabBar extends Component {
       <View
         style={{
           height: 50,
-          overflow: 'visible'
+          overflow: 'visible',
+          backgroundColor: 'white',
         }}
       >
         <View
@@ -284,8 +297,9 @@ class TabBar extends Component {
           }}
           style={{
             flexDirection: 'row',
+            backgroundColor: 'transparent',
             position: 'absolute',
-            top: 0,
+            top: 5,
             left: 0,
             bottom: 0,
             right: -3000
@@ -298,7 +312,6 @@ class TabBar extends Component {
                 style={{ padding: 15, paddingBottom: 35 }}
                 onLayout={e => {
                   if (this._allTabsMeasured) return
-                  console.log('Layout on', title)
                   const { x, width, height, } = e.nativeEvent.layout
                   const { initialTab } = this.props
                   this._tabMeasurements[title] = { left: x, right: x + width, width, height }
@@ -331,28 +344,25 @@ class TabBar extends Component {
                     fontSize: 12,
                     fontFamily:'Source Sans Pro',
                     fontWeight: '500',
+                    // color: 'white',
                     color: opacity.interpolate({
                       inputRange: [0, 1],
                       outputRange: ['rgb(188, 188, 188)', 'rgb(48, 192, 255)']
-                    })
+                    }),
+                    // opacity: opacity.interpolate({
+                    //   inputRange: [0, 1],
+                    //   outputRange: [0.5, 1]
+                    // })
                   }}
                 >{title.toUpperCase()}</Animated.Text>
               </TouchableOpacity>
             )
           })}
         </View>
-        <View style={{
-          position: 'absolute',
-          height: 0.5,
-          backgroundColor: '#D8D8D8',
-          bottom: 0,
-          left: -getDeviceWidth(),
-          right: -getDeviceWidth()
-        }}></View>
         <Animated.View style={{
           position: 'absolute',
           height: 3,
-          backgroundColor: '#09b4ff',
+          backgroundColor: 'rgb(48, 192, 255)',
           bottom: 0,
           left: 50,
           width: this.state.tabUnderlineWidth,
