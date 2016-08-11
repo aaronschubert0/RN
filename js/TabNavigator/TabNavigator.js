@@ -17,7 +17,6 @@ export default class TabNavigator extends Component {
     })
   }
   shouldComponentUpdate () {
-    console.log('definitely not')
     return true
   }
   constructor (props) {
@@ -86,7 +85,6 @@ export default class TabNavigator extends Component {
   }
 
   render () {
-    console.log('rendering')
     const state = this._readState()
     if (!state) return null
 
