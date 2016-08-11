@@ -53,10 +53,6 @@ const Article = ({ article }) => {
   )
 }
 
-
-{/*<InfoPanel date="TUESDAY 12 JULY" lastUpdatedTime="10:44am" />*/}
-
-
 class One extends Component {
 
   constructor(props) {
@@ -70,6 +66,11 @@ class One extends Component {
 
   componentDidMount() {
     const articles = [
+      {
+        infoPanel: true,
+        date: "THURSDAY 11 AUGUST",
+        lastUpdatedTime: "12:01pm"
+      },
       {
         title: "Sturgeon: Tackling 'unnacceptable' child poverty a priority",
         imageURL: 'https://files.stv.tv/imagebase/461/w768/461445-daniel-roche-left-ramona-marquez-and-tyger-drew-honey-in-2011.jpg',
@@ -140,12 +141,15 @@ class One extends Component {
     });
   }
 
-  renderPreview(articleObject) {
+  _renderComponent(object) {
     return (
+      object.type ?
       <View>
-        <Article article={articleObject} />
+        <Article article={object} />
         <Divider />
       </View>
+      :
+      <InfoPanel date={object.date} lastUpdatedTime={object.lastUpdatedTime}/>
     )
   }
 
@@ -153,7 +157,7 @@ class One extends Component {
     return (
       <ListView
         dataSource={this.state.dataSource}
-        renderRow={this.renderPreview}
+        renderRow={this._renderComponent}
         style={{ flex: 1}}
       />
     )
