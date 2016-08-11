@@ -3,7 +3,7 @@ import { Image, View, ScrollView } from 'react-native'
 import Indicator from './Indicator'
 import LinearGradient from 'react-native-linear-gradient'
 import SectionButton from './SectionButton'
-import TransitionalImage from '../components/TransitionalImage'
+import TransitionalImage from '../Components/TransitionalImage'
 import calculateScrollPosition from './calculate-scroll-position'
 
 export default class SectionNavigator extends Component {

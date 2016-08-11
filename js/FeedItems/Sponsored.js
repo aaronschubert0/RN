@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Image, Text } from 'react-native'
-import { Meta } from '../components/'
+import { Meta } from '../Components/'
 
 const Sponsored = ({ title, imageURL, section }) => {
   return (

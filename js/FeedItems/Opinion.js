@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Text } from 'react-native'
-import { Meta } from '../components/'
+import { Meta } from '../Components/'
 
 const Opinion = ({ author, quote, section }) => {
   return (

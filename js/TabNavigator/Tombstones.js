@@ -1,6 +1,6 @@
 import React from 'react'
 import { View } from 'react-native'
-import { Divider, InfoPanel } from '../components/'
+import { Divider, InfoPanel } from '../Components/'
 
 const Tombstones = () => {
   return (

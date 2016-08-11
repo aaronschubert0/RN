@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { AppRegistry, View, ViewPagerAndroid, Text, Image, ScrollView, TouchableWithoutFeedback, Animated, StyleSheet, Modal } from 'react-native'
 import { TabNavigator, Tab } from './js/TabNavigator/'
-import { Meta, Divider, InfoPanel } from './js/components/'
+import { Meta, Divider, InfoPanel } from './js/Components/'
 import { FeaturedImage, SmallImage, Opinion, Live, Sponsored } from './js/FeedItems/'
 
 const Metro = () => {

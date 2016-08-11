@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Text, Image } from 'react-native'
-import { Meta } from '../components/'
+import { Meta } from '../Components/'
 
 const SmallImage = ({ title, imageURL, section, time }) => {
   return (
