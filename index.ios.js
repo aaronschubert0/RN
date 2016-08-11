@@ -168,7 +168,6 @@ class One extends Component {
   }
 
   componentDidMount() {
-    console.log('Props ', this.props)
     const articles = [
       {
         infoPanel: true,

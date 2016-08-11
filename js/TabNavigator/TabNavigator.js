@@ -21,7 +21,6 @@ export default class TabNavigator extends Component {
   }
 
   componentWillMount () {
-    console.log('Tab props', this.props.tabProps)
     this._storeTabs()
   }
 
