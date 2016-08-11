@@ -8,15 +8,15 @@ const {
   StateUtils: NavigationStateUtils,
 } = NavigationExperimental;
 
-const Root = ({ onNavigationChange }) => {
+const Root = ({ push, pop }) => {
   return (
     <View style={{ paddingTop: 20, backgroundColor: 'white' }}>
       <TabNavigator
         initialTab="Top Stories"
         renderDistance={1}
         tabProps={{
-          push: (component, key) => onNavigationChange('push', component, key),
-          pop: () => onNavigationChange('pop')
+          push,
+          pop
         }}
       >
         <Tab title="Breaking News" component={One} />
@@ -41,17 +41,17 @@ class Metro extends Component {
     this.state = {
       navigationState: {
         index: 0,
-        routes: [{ key: 'root', component: <Root onNavigationChange={this.onNavigationChange}/>}]
+        routes: [{ key: 'root', component: Root}]
       }
     }
   }
 
-  _onNavigationChange(type, component, key) {
+  _onNavigationChange(type, component, props, key) {
     let { navigationState } = this.state
 
     switch (type) {
       case 'push':
-        const route = {key: key, component: component}
+        const route = {component, props, key}
         navigationState = NavigationStateUtils.push(navigationState, route)
         break;
       case 'pop':
@@ -77,19 +77,24 @@ class Metro extends Component {
 
   _renderScene(sceneProps) {
     const { scene } = sceneProps
-    return scene.route.component
+    const { component: Component, props } = scene.route
+    const navigationActions = {
+      push: (component, props, key) => this.onNavigationChange('push', component, props, key),
+      pop: () => this.onNavigationChange('pop')
+    }
+
+    return <Component {...props} {...navigationActions} />
   }
 }
 
-const FullScreenArticle = ({ data, pop }) => {
-  const { title, imageURL, section } = data
+const FullScreenArticle = ({ title, imageURL, section, pop }) => {
   return (
     <View style={{ backgroundColor: 'white', flex: 1 }}>
       <View style={{ backgroundColor: 'white', borderBottomColor: 'gray', borderBottomWidth: 0.5, height: 64, flexDirection:'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 20, paddingLeft: 20, paddingRight: 20 }}>
         <TouchableOpacity onPress={() => pop()}>
           <Text style={{ color: '#54565b', fontFamily:'Source Sans Pro', fontSize: 16 }}>{'< Back'}</Text>
         </TouchableOpacity>
-        <Text style={{ color: '#09b4ff', fontFamily:'Source Sans Pro', fontSize: 16 }}>{data.section}</Text>
+        <Text style={{ color: '#09b4ff', fontFamily:'Source Sans Pro', fontSize: 16 }}>{section}</Text>
         <Text style={{ color: '#54565b', fontFamily:'Source Sans Pro', fontSize: 16 }}>Share</Text>
       </View>
       <ScrollView style={{ flex: 1}}>
@@ -251,7 +256,7 @@ class One extends Component {
   _renderComponent(object) {
     return (
       object.type ?
-      <TouchableOpacity onPress={() => this.props.push(<FullScreenArticle data={object} pop={() => this.props.pop()}/>, 'article')}>
+      <TouchableOpacity onPress={() => this.props.push(FullScreenArticle, object, 'article')}>
         <Article article={object} />
         <Divider />
       </TouchableOpacity>
