@@ -8,26 +8,50 @@ const {
   StateUtils: NavigationStateUtils,
 } = NavigationExperimental;
 
+const Root = ({ onNavigationChange }) => {
+  return (
+    <View style={{ paddingTop: 20, backgroundColor: 'white' }}>
+      <TabNavigator
+        initialTab="Top Stories"
+        renderDistance={1}
+        tabProps={{
+          push: (component, key) => onNavigationChange('push', component, key),
+          pop: () => onNavigationChange('pop')
+        }}
+      >
+        <Tab title="Breaking News" component={One} />
+        <Tab title="Top Stories" component={One} />
+        <Tab title="Glasgow / West" component={One} />
+        <Tab title="UK" component={One} />
+        <Tab title="International" component={One} />
+        <Tab title="Politics" component={One} />
+        <Tab title="Features" component={One} />
+        <Tab title="Entertainment" component={One} />
+      </TabNavigator>
+    </View>
+  )
+}
+
 class Metro extends Component {
 
   constructor(props) {
     super(props)
+    this.onNavigationChange = this._onNavigationChange.bind(this)
+
     this.state = {
       navigationState: {
         index: 0,
-        routes: [{ key: 'root' }]
+        routes: [{ key: 'root', component: <Root onNavigationChange={this.onNavigationChange}/>}]
       }
     }
-
-    this.onNavigationChange = this._onNavigationChange.bind(this)
   }
 
-  _onNavigationChange(type, component, data) {
+  _onNavigationChange(type, component, key) {
     let { navigationState } = this.state
 
     switch (type) {
       case 'push':
-        const route = {key: 'Route-' + type.id}
+        const route = {key: key, component: component}
         navigationState = NavigationStateUtils.push(navigationState, route)
         break;
       case 'pop':
@@ -36,11 +60,7 @@ class Metro extends Component {
     }
 
     if (this.state.navigationState !== navigationState) {
-      this.setState({
-        navigationState: navigationState,
-        data: data,
-        component: component
-      })
+      this.setState({ navigationState })
     }
   }
 
@@ -57,42 +77,16 @@ class Metro extends Component {
 
   _renderScene(sceneProps) {
     const { scene } = sceneProps
-    const { component, data } = this.state
-    if (scene.route.key === 'root') {
-      return (
-        <View style={{ paddingTop: 20, backgroundColor: 'white' }}>
-          <TabNavigator
-            initialTab="Top Stories"
-            renderDistance={1}
-            tabProps={{
-              push: (component, data) => this.onNavigationChange('push', component, data),
-            }}
-          >
-            <Tab title="Breaking News" component={One} />
-            <Tab title="Top Stories" component={One} />
-            <Tab title="Glasgow / West" component={One} />
-            <Tab title="UK" component={One} />
-            <Tab title="International" component={One} />
-            <Tab title="Politics" component={One} />
-            <Tab title="Features" component={One} />
-            <Tab title="Entertainment" component={One} />
-          </TabNavigator>
-        </View>
-      )
-    } else if (scene.route.key.indexOf('Route-') !== -1){
-      return (
-        React.cloneElement(component, {...data})
-      )
-    }
+    return scene.route.component
   }
 }
 
-const FullScreenArticle = (data) => {
+const FullScreenArticle = ({ data, pop }) => {
   const { title, imageURL, section } = data
   return (
     <View style={{ backgroundColor: 'white', flex: 1 }}>
       <View style={{ backgroundColor: 'white', borderBottomColor: 'gray', borderBottomWidth: 0.5, height: 64, flexDirection:'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 20, paddingLeft: 20, paddingRight: 20 }}>
-        <TouchableOpacity onPress={() => this.onNavigationChange('pop', undefined)}>
+        <TouchableOpacity onPress={() => pop()}>
           <Text style={{ color: '#54565b', fontFamily:'Source Sans Pro', fontSize: 16 }}>{'< Back'}</Text>
         </TouchableOpacity>
         <Text style={{ color: '#09b4ff', fontFamily:'Source Sans Pro', fontSize: 16 }}>{data.section}</Text>
@@ -257,7 +251,7 @@ class One extends Component {
   _renderComponent(object) {
     return (
       object.type ?
-      <TouchableOpacity onPress={() => this.props.push(<FullScreenArticle />, object)}>
+      <TouchableOpacity onPress={() => this.props.push(<FullScreenArticle data={object} pop={() => this.props.pop()}/>, 'article')}>
         <Article article={object} />
         <Divider />
       </TouchableOpacity>
