@@ -215,7 +215,6 @@ class TabBar extends Component {
 
     if (!endTab || !currentTab || !startTab) return
 
-
     tabs[endTab].opacity.setValue(
       direction === 'left'
         ? 1-(progressTowardsNextTab-1)
@@ -310,10 +309,6 @@ class TabBar extends Component {
                   }
 
                   if (Object.keys(this._tabMeasurements).length === Object.keys(tabs).length) {
-                    Animated.timing(
-                      this.state.tabOpacity,
-                      { toValue: 1, duration: 300 }
-                    ).start()
                     this._allTabsMeasured = true
                     onTabsMeasured(this._tabMeasurements)
                   }
@@ -353,18 +348,6 @@ class TabBar extends Component {
           bottom: 0,
           left: 50,
           width: this.state.tabUnderlineWidth,
-        }}></Animated.View>
-        <Animated.View pointerEvents={'none'} style={{
-          position: 'absolute',
-          backgroundColor: 'white',
-          top: 0,
-          right: 0,
-          bottom: 0,
-          left: 0,
-          opacity: this.state.tabOpacity.interpolate({
-            inputRange: [0, 1],
-            outputRange: [1, 0]
-          })
         }}></Animated.View>
       </View>
 
