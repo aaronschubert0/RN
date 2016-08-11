@@ -21,6 +21,7 @@ export default class TabNavigator extends Component {
   }
 
   componentWillMount () {
+    console.log('Tab props', this.props.tabProps)
     this._storeTabs()
   }
 
@@ -120,7 +121,7 @@ export default class TabNavigator extends Component {
             const { title, component: TabComponent } = tabs[key]
             return (
               <View key={title} style={viewStyle}>
-                <TabComponent />
+                <TabComponent {...this.props.tabProps} />
               </View>
             )
           })}
