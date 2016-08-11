@@ -273,7 +273,7 @@ class TabBar extends Component {
           overflow: 'visible'
         }}
       >
-        <View
+        <Animated.View
           ref={tv => {
             this.tv = tv
             tabBarRef(tv)
@@ -284,7 +284,8 @@ class TabBar extends Component {
             top: 0,
             left: 0,
             bottom: 0,
-            right: -3000
+            right: -3000,
+            opacity: this.state.tabOpacity
           }}
         >
           {Object.keys(tabs).map(key => tabs[key]).map(({ opacity, title }, index) => {
@@ -309,6 +310,10 @@ class TabBar extends Component {
                   }
 
                   if (Object.keys(this._tabMeasurements).length === Object.keys(tabs).length) {
+                    Animated.timing(
+                      this.state.tabOpacity,
+                      { toValue: 1, duration: 300 }
+                    ).start()
                     this._allTabsMeasured = true
                     onTabsMeasured(this._tabMeasurements)
                   }
@@ -332,7 +337,7 @@ class TabBar extends Component {
               </TouchableOpacity>
             )
           })}
-        </View>
+        </Animated.View>
         <View style={{
           position: 'absolute',
           height: 0.5,
