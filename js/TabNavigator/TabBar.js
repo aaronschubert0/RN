@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Animated } from 'react-native'
+import { View, Animated, Image } from 'react-native'
 import TabButton from './TabButton'
 import getDeviceWidth from '../get-device-width'
 
@@ -108,10 +108,13 @@ export default class TabBar extends Component {
     return (
       <View
         style={{
-          height: 50,
+          height: 80,
           overflow: 'visible'
         }}
       >
+      <View style={{ height: 30, justifyContent: 'center', alignItems: 'center', paddingTop: 2 }}>
+        <Image source={require('../../img/logo.png')} style={{ width: 82, height: 26}} />
+      </View>
         <Animated.View
           ref={tv => {
             this.tv = tv
@@ -120,7 +123,7 @@ export default class TabBar extends Component {
           style={{
             flexDirection: 'row',
             position: 'absolute',
-            top: 0,
+            top: 30,
             left: 0,
             bottom: 0,
             right: -3000,

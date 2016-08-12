@@ -105,7 +105,7 @@ export default class TabNavigator extends Component {
             return true
           }}
           style={{
-            height: 607
+            height: 567
           }}
         >
           {tabKeys.map((key, index) => {
