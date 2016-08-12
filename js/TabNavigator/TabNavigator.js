@@ -120,7 +120,7 @@ export default class TabNavigator extends Component {
             const { title, component: TabComponent } = tabs[key]
             return (
               <View key={title} style={viewStyle}>
-                <TabComponent {...this.props.tabProps} />
+                <TabComponent {...this.props.tabProps} title={title}/>
               </View>
             )
           })}
