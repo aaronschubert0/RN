@@ -21,7 +21,6 @@ const Root = ({ push, pop }) => {
           pop
         }}
       >
-        <Tab title="Breaking News" component={Feed} />
         <Tab title="Top Stories" component={Feed} />
         <Tab title="Glasgow / West" component={Feed} />
         <Tab title="UK" component={Feed} />
