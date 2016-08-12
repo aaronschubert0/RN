@@ -177,7 +177,6 @@ class One extends Component {
         title: "Sturgeon: Tackling 'unnacceptable' child poverty a priority",
         imageURL: 'https://files.stv.tv/imagebase/461/w768/461445-daniel-roche-left-ramona-marquez-and-tyger-drew-honey-in-2011.jpg',
         section: "GLASGOW & WEST",
-        id: 1000,
         time: "34 MIN",
         type: "bigimage"
       },
@@ -185,7 +184,6 @@ class One extends Component {
         title: "Murder probe after elderly man stabbed to death in street",
         imageURL: 'https://files.stv.tv/imagebase/13/w768/13179-crash-at-busy-city-roundabout.jpg',
         section: "GLASGOW & WEST",
-        id: 2000,
         time: "34 MIN",
         type: "smallimage"
       },
@@ -193,28 +191,24 @@ class One extends Component {
         author: "Melanie Reid",
         quote: "We need leaders like Theresa May and Nicola Sturgeon in a world gone mad",
         section: "POLITICS",
-        id: 3000,
         type: "opinion"
       },
       {
         title: "North Sea Oil workers announce 48-hours offshore strike",
         imageURL: 'https://files.stv.tv/imagebase/431/w768/431609-generic-stock-coastguard-rescue-helicopter-rescuegeneric.jpg',
         section: "ABERDEEN & NORTH",
-        id: 4000,
         type: "live"
       },
       {
         title: "5 Guys opens up in Glasgow City Centre",
         imageURL: 'https://bloximages.chicago2.vip.townnews.com/heraldextra.com/content/tncms/assets/v3/editorial/2/c1/2c1b327d-5967-5d22-bc0e-6e61971f19cb/51416f5fe66d5.image.jpg',
         section: "LOCAL",
-        id: 5000,
         type: "ad"
       },
       {
         title: "Sturgeon: Tackling 'unnacceptable' child poverty a priority",
         imageURL: 'https://files.stv.tv/imagebase/461/w768/461445-daniel-roche-left-ramona-marquez-and-tyger-drew-honey-in-2011.jpg',
         section: "GLASGOW & WEST",
-        id: 6000,
         time: "34 MIN",
         type: "bigimage"
       },
@@ -222,7 +216,6 @@ class One extends Component {
         title: "Murder probe after elderly man stabbed to death in street",
         imageURL: 'https://files.stv.tv/imagebase/13/w768/13179-crash-at-busy-city-roundabout.jpg',
         section: "GLASGOW & WEST",
-        id: 7000,
         time: "34 MIN",
         type: "smallimage"
       },
@@ -230,21 +223,18 @@ class One extends Component {
         author: "Melanie Reid",
         quote: "We need leaders like Theresa May and Nicola Sturgeon in a world gone mad",
         section: "POLITICS",
-        id: 8000,
         type: "opinion"
       },
       {
         title: "North Sea Oil workers announce 48-hours offshore strike",
         imageURL: 'https://files.stv.tv/imagebase/431/w768/431609-generic-stock-coastguard-rescue-helicopter-rescuegeneric.jpg',
         section: "ABERDEEN & NORTH",
-        id: 9000,
         type: "live"
       },
       {
         title: "5 Guys opens up in Glasgow City Centre",
         imageURL: 'https://bloximages.chicago2.vip.townnews.com/heraldextra.com/content/tncms/assets/v3/editorial/2/c1/2c1b327d-5967-5d22-bc0e-6e61971f19cb/51416f5fe66d5.image.jpg',
         section: "LOCAL",
-        id: 9999,
         type: "ad"
       }
     ]
