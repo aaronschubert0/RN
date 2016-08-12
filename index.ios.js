@@ -1,25 +1,90 @@
 import React, { Component, PropTypes } from 'react'
-import { AppRegistry, View, Text, Image, ListView } from 'react-native'
+import { AppRegistry, View, Text, Image, ListView, NavigationExperimental, TouchableOpacity, ScrollView } from 'react-native'
 import { TabNavigator, Tab } from './js/TabNavigator/'
 import { Meta, Divider, InfoPanel } from './js/Components/'
 import { FeaturedImage, SmallImage, Opinion, Live, Sponsored } from './js/FeedItems/'
+import FullscreenArticle from './js/Article/FullscreenArticle'
+const {
+  CardStack: NavigationCardStack,
+  StateUtils: NavigationStateUtils,
+} = NavigationExperimental;
 
-const Metro = () => {
+const Root = ({ push, pop }) => {
   return (
     <View style={{ paddingTop: 20, backgroundColor: 'white' }}>
-      <TabNavigator initialTab="Top Stories" renderDistance={1}>
+      <TabNavigator
+        initialTab="Top Stories"
+        renderDistance={1}
+        tabProps={{
+          push,
+          pop
+        }}
+      >
         <Tab title="Breaking News" component={One} />
-        <Tab title="Top Stories" component={Two} />
-        <Tab title="Glasgow / West" component={Three} />
-        <Tab title="UK" component={Four} />
-        <Tab title="International" component={Five} />
-        <Tab title="Politics" component={Six} />
-        <Tab title="Features" component={Seven} />
-        <Tab title="Entertainment" component={Eight} />
+        <Tab title="Top Stories" component={One} />
+        <Tab title="Glasgow / West" component={One} />
+        <Tab title="UK" component={One} />
+        <Tab title="International" component={One} />
+        <Tab title="Politics" component={One} />
+        <Tab title="Features" component={One} />
+        <Tab title="Entertainment" component={One} />
       </TabNavigator>
     </View>
-
   )
+}
+
+class Metro extends Component {
+
+  constructor(props) {
+    super(props)
+    this.onNavigationChange = this._onNavigationChange.bind(this)
+
+    this.state = {
+      navigationState: {
+        index: 0,
+        routes: [{ key: 'root', component: Root}]
+      }
+    }
+  }
+
+  _onNavigationChange(type, component, props, key) {
+    let { navigationState } = this.state
+
+    switch (type) {
+      case 'push':
+        const route = {component, props, key}
+        navigationState = NavigationStateUtils.push(navigationState, route)
+        break;
+      case 'pop':
+        navigationState = NavigationStateUtils.pop(navigationState)
+        break;
+    }
+
+    if (this.state.navigationState !== navigationState) {
+      this.setState({ navigationState })
+    }
+  }
+
+  render() {
+    return (
+      <NavigationCardStack
+        onNavigateBack={() => this.onNavigationChange('pop', undefined, undefined)}
+        navigationState={this.state.navigationState}
+        renderScene={this._renderScene.bind(this)}
+        style={{ flex: 1}}
+      />
+    )
+  }
+
+  _renderScene(sceneProps) {
+    const { scene } = sceneProps
+    const { component: Component, props } = scene.route
+    const navigationActions = {
+      push: (component, props, key) => this.onNavigationChange('push', component, props, key),
+      pop: () => this.onNavigationChange('pop')
+    }
+    return <Component {...props} {...navigationActions} />
+  }
 }
 
 const ArticleSwitcher = ({ fullscreen, article, children }) => {
@@ -144,10 +209,13 @@ class One extends Component {
   _renderComponent(object) {
     return (
       object.type ?
-      <View>
+      <TouchableOpacity
+        onPress={() => this.props.push(FullscreenArticle,
+         { articleData: object, sectionTitle: this.props.title },
+          'article')}>
         <Article article={object} />
         <Divider />
-      </View>
+      </TouchableOpacity>
       :
       <InfoPanel date={object.date} lastUpdatedTime={object.lastUpdatedTime}/>
     )
@@ -157,48 +225,12 @@ class One extends Component {
     return (
       <ListView
         dataSource={this.state.dataSource}
-        renderRow={this._renderComponent}
+        renderRow={this._renderComponent.bind(this)}
         style={{ flex: 1}}
       />
     )
   }
 
-}
-
-const Two = () => {
-  return (
-    <One />
-  )
-}
-const Three = () => {
-  return (
-    <One />
-  )
-}
-const Four = () => {
-  return (
-    <One />
-  )
-}
-const Five = () => {
-  return (
-    <One />
-  )
-}
-const Six = () => {
-  return (
-    <One />
-  )
-}
-const Seven = () => {
-  return (
-    <One />
-  )
-}
-const Eight = () => {
-  return (
-    <One />
-  )
 }
 
 AppRegistry.registerComponent('Metro', () => Metro)
