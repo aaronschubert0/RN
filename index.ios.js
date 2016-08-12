@@ -3,7 +3,8 @@ import { AppRegistry, View, Text, Image, ListView, NavigationExperimental, Touch
 import { TabNavigator, Tab } from './js/TabNavigator/'
 import { Meta, Divider, InfoPanel } from './js/Components/'
 import { FeaturedImage, SmallImage, Opinion, Live, Sponsored } from './js/FeedItems/'
-import FullscreenArticle from './js/Article/FullscreenArticle'
+import Article from './js/Article/'
+
 const {
   CardStack: NavigationCardStack,
   StateUtils: NavigationStateUtils,
@@ -85,37 +86,6 @@ class Metro extends Component {
     }
     return <Component {...props} {...navigationActions} />
   }
-}
-
-const ArticleSwitcher = ({ fullscreen, article, children }) => {
-  return (
-    fullscreen ? null : children
-  )
-}
-
-const Article = ({ article }) => {
-
-  function _previewForArticleType(type) {
-    if (type === 'bigimage') {
-      return <FeaturedImage title={article.title} imageURL={article.imageURL} section={article.section} time={article.time}/>
-    } else if (type === 'smallimage') {
-      return <SmallImage title={article.title} imageURL={article.imageURL} section={article.section} time={article.time}/>
-    } else if (type === 'opinion') {
-      return <Opinion author={article.author} quote={article.quote} section={article.section} />
-    } else if (type === 'live') {
-      return <Live title={article.title} imageURL={article.imageURL} section={article.section} />
-    } else if (type === 'ad') {
-      return <Sponsored title={article.title} imageURL={article.imageURL}/>
-    }
-  }
-
-  return (
-    <View>
-      <ArticleSwitcher article={article}>
-        {_previewForArticleType(article.type)}
-      </ArticleSwitcher>
-    </View>
-  )
 }
 
 class One extends Component {
@@ -206,14 +176,28 @@ class One extends Component {
     });
   }
 
+   _previewForArticleType(type, article) {
+    if (type === 'bigimage') {
+      return <Article.Preview.FeaturedImage title={article.title} imageURL={article.imageURL} section={article.section} time={article.time}/>
+    } else if (type === 'smallimage') {
+      return <Article.Preview.SmallImage title={article.title} imageURL={article.imageURL} section={article.section} time={article.time}/>
+    } else if (type === 'opinion') {
+      return <Article.Preview.Opinion author={article.author} quote={article.quote} section={article.section} />
+    } else if (type === 'live') {
+      return <Article.Preview.Live title={article.title} imageURL={article.imageURL} section={article.section} />
+    } else if (type === 'ad') {
+      return <Article.Preview.Sponsored title={article.title} imageURL={article.imageURL}/>
+    }
+  }
+
   _renderComponent(object) {
     return (
       object.type ?
       <TouchableOpacity
-        onPress={() => this.props.push(FullscreenArticle,
+        onPress={() => this.props.push(Article.Fullscreen,
          { articleData: object, sectionTitle: this.props.title },
           'article')}>
-        <Article article={object} />
+          {this._previewForArticleType(object.type, object)}
         <Divider />
       </TouchableOpacity>
       :
