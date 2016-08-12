@@ -21,14 +21,14 @@ const Root = ({ push, pop }) => {
           pop
         }}
       >
-        <Tab title="Breaking News" component={One} />
-        <Tab title="Top Stories" component={One} />
-        <Tab title="Glasgow / West" component={One} />
-        <Tab title="UK" component={One} />
-        <Tab title="International" component={One} />
-        <Tab title="Politics" component={One} />
-        <Tab title="Features" component={One} />
-        <Tab title="Entertainment" component={One} />
+        <Tab title="Breaking News" component={Feed} />
+        <Tab title="Top Stories" component={Feed} />
+        <Tab title="Glasgow / West" component={Feed} />
+        <Tab title="UK" component={Feed} />
+        <Tab title="International" component={Feed} />
+        <Tab title="Politics" component={Feed} />
+        <Tab title="Features" component={Feed} />
+        <Tab title="Entertainment" component={Feed} />
       </TabNavigator>
     </View>
   )
@@ -88,7 +88,7 @@ class Metro extends Component {
   }
 }
 
-class One extends Component {
+class Feed extends Component {
 
   constructor(props) {
     super(props)
