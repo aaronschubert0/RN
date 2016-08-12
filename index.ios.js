@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-import { AppRegistry, View, Text, Image, ListView, NavigationExperimental, TouchableOpacity, ScrollView } from 'react-native'
+import { AppRegistry, View, ListView, NavigationExperimental, TouchableOpacity } from 'react-native'
 import { TabNavigator, Tab } from './js/TabNavigator/'
 import { Meta, Divider, InfoPanel } from './js/Components/'
 import { FeaturedImage, SmallImage, Opinion, Live, Sponsored } from './js/FeedItems/'
