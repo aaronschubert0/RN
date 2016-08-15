@@ -102,7 +102,6 @@ class Feed extends Component {
     const articles = [
       {
         infoPanel: true,
-        date: "THURSDAY 11 AUGUST",
         lastUpdatedTime: "12:01pm"
       },
       {
@@ -200,7 +199,7 @@ class Feed extends Component {
         <Divider />
       </TouchableOpacity>
       :
-      <InfoPanel date={object.date} lastUpdatedTime={object.lastUpdatedTime}/>
+      <InfoPanel lastUpdatedTime={object.lastUpdatedTime}/>
     )
   }
 
