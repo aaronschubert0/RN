@@ -87,6 +87,8 @@ class Metro extends Component {
   }
 }
 
+import requestRankedArticlesInSection from './js/API/requestRankedArticlesInSection'
+
 class Feed extends Component {
 
   constructor(props) {
@@ -99,6 +101,8 @@ class Feed extends Component {
   }
 
   componentDidMount() {
+    requestRankedArticlesInSection(3057).then(console.log)
+
     const articles = [
       {
         infoPanel: true,
