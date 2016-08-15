@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-import { AppRegistry, View, ListView, NavigationExperimental, TouchableOpacity } from 'react-native'
+import { AppRegistry, View, ListView, NavigationExperimental, TouchableOpacity, RefreshControl } from 'react-native'
 import { TabNavigator, Tab } from './js/TabNavigator/'
 import { Meta, Divider, InfoPanel } from './js/Components/'
 import { FeaturedImage, SmallImage, Opinion, Live, Sponsored } from './js/FeedItems/'
@@ -94,11 +94,16 @@ class Feed extends Component {
     this.state = {
       dataSource: new ListView.DataSource({
         rowHasChanged: (row1, row2) => row1 !== row2,
-      })
+      }),
+      refreshing: false
     };
   }
 
   componentDidMount() {
+    this._setDataSource()
+  }
+
+  _setDataSource() {
     const articles = [
       {
         infoPanel: true,
@@ -174,6 +179,14 @@ class Feed extends Component {
     });
   }
 
+  _onRefresh() {
+     this.setState({refreshing: true})
+     setTimeout(() => {
+       this._setDataSource() 
+       this.setState({refreshing: false})
+      }, 100)
+  }
+
    _previewForArticleType(type, article) {
     if (type === 'bigimage') {
       return <Article.Preview.FeaturedImage title={article.title} imageURL={article.imageURL} section={article.section} time={article.time}/>
@@ -209,6 +222,11 @@ class Feed extends Component {
         dataSource={this.state.dataSource}
         renderRow={this._renderComponent.bind(this)}
         style={{ flex: 1}}
+        refreshControl={
+         <RefreshControl
+           refreshing={this.state.refreshing}
+           onRefresh={this._onRefresh.bind(this)} />
+         }
       />
     )
   }
