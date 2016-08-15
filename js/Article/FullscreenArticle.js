@@ -2,7 +2,6 @@ import React from 'react'
 import  { View, TouchableOpacity, Image, ScrollView, Text } from 'react-native'
 
 const FullscreenArticle = ({ articleData, sectionTitle, pop }) => {
-  console.log('Render ')
   const { title, imageURL } = articleData
   return (
     <View style={{ backgroundColor: 'white', flex: 1 }}>
