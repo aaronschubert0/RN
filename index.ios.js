@@ -84,9 +84,5 @@ class Metro extends Component {
     return <Component {...props} {...navigationActions} />
   }
 }
-import requestRankedArticlesInSection from './js/API/requestRankedArticlesInSection'
-
-    requestRankedArticlesInSection(3057).then(console.log)
-
 
 AppRegistry.registerComponent('Metro', () => Metro)
