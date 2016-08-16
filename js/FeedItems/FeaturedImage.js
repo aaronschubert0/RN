@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Text, Image } from 'react-native'
-import { Meta } from '../Components/'
+import { Meta, TransitionalImage } from '../Components/'
 
 const FeaturedImage = ({ title, imageURL, section, time }) => {
   return (
@@ -11,9 +11,9 @@ const FeaturedImage = ({ title, imageURL, section, time }) => {
       </Text>
       <Meta time={time} section={section.title}/>
     </View>
-    <Image
-    source={{uri: imageURL}}
-    style={{width: 375, height: 211}}
+    <TransitionalImage
+      url={imageURL}
+      style={{width: 375, height: 211, backgroundColor: '#D8D8D8'}}
     />
     </View>
   )

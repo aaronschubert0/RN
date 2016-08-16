@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { View, Text } from 'react-native'
 import moment from 'moment'
 
@@ -13,7 +13,7 @@ function formatedDate(date) {
     const days = Math.round(hours/24)
     formatedTime = days + ' day'
   } else if (hours >= 1) {
-    formatedTime = hours + ' hr'
+    formatedTime = hours + ' hrs'
   } else if (minutes > 0) {
     formatedTime = minutes + ' min'
   } else if (delta < 30) {
@@ -22,13 +22,36 @@ function formatedDate(date) {
   return formatedTime.toUpperCase()
 }
 
-const Meta = ({ time, section, style }) => {
-  return (
-    <View style={[ style, {flexDirection: 'row'} ]}>
-      { time ? <Text style={{fontSize: 13, fontFamily:'Source Sans Pro', color: '#09b4ff'}}>{formatedDate(new Date(time)) + ' / '}</Text> : null }
-      { section ? <Text style={{fontSize: 13, fontFamily:'Source Sans Pro', color: 'gray'}}>{section}</Text> :  null }
-    </View>
-  )
-}
 
-export default Meta
+export default class Meta extends Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      time: formatedDate(new Date(this.props.time))
+    }
+  }
+
+  componentWillMount() {
+    this._updateTime()
+  }
+
+  _updateTime() {
+    setTimeout(() => {
+      this.setState({
+        time: formatedDate(new Date(this.props.time))
+      })
+      this._updateTime()
+    }, 60000)
+  }
+
+  render() {
+    const { time, section, style } = this.props
+    return (
+      <View style={[ style, {flexDirection: 'row'} ]}>
+        { time ? <Text style={{fontSize: 13, fontFamily:'Source Sans Pro', color: '#09b4ff'}}>{this.state.time + ' / '}</Text> : null }
+        { section ? <Text style={{fontSize: 13, fontFamily:'Source Sans Pro', color: 'gray'}}>{section}</Text> :  null }
+      </View>
+    )
+  }
+}

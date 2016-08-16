@@ -49,8 +49,6 @@ export default class Feed extends Component {
     } else if (article.contentType === 'live-blog') {
       return <Article.Preview.Live title={article.title} imageURL={article.imageURL} section={article.section} />
     }
-    // } else if (type === 'opinion') {
-    // } else if (type === 'live') {
     // } else if (type === 'ad') {
     //   return <Article.Preview.Sponsored title={article.title} imageURL={article.imageURL}/>
     // }

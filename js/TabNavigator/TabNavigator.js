@@ -105,22 +105,15 @@ export default class TabNavigator extends Component {
             return true
           }}
           style={{
-            height: 567
+            height: Dimensions.get('window').height-95
           }}
         >
           {tabKeys.map((key, index) => {
             const viewStyle = { width: getDeviceWidth() }
-            if (renderedTabKeys.indexOf(key) === -1){
-              return (
-                <View key={`placeholder_${index}`} style={[viewStyle]}>
-                  <Tombstones />
-                </View>
-              )
-            }
             const { title, component: TabComponent } = tabs[key]
             return (
               <View key={title} style={viewStyle}>
-                <TabComponent {...this.props.tabProps} title={title}/>
+                <TabComponent {...this.props.tabProps} shouldLoad={(renderedTabKeys.indexOf(key) > -1)} title={title}/>
               </View>
             )
           })}
