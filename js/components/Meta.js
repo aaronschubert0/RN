@@ -13,7 +13,7 @@ function formatedDate(date) {
     formatedTime = hours + ' hr'
   } else if (minutes > 0) {
     formatedTime = minutes + ' min'
-  } else {
+  } else if (delta < 30) {
     formatedTime = delta + ' s'
   }
   return formatedTime.toUpperCase()
