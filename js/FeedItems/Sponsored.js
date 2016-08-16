@@ -17,7 +17,7 @@ const Sponsored = ({ title, imageURL, section }) => {
           <View style={{ padding: 1.5, paddingLeft: 7, paddingRight: 7, borderRadius: 2, backgroundColor: '#F4DB43', marginRight: 5}}>
             <Text style={{ color: 'white', fontSize: 10, fontWeight: '500', fontFamily:'Source Sans Pro' }}>{'SPONSORED'}</Text>
           </View>
-          <Meta section={section}/>
+          <Meta section={section.title}/>
         </View>
       </View>
     </View>

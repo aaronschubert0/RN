@@ -11,7 +11,7 @@ const Opinion = ({ author, quote, section }) => {
           {quote}
         </Text>
         </Text>
-      <Meta section={section} style={{ paddingBottom: 5}}/>
+      <Meta section={section.title} style={{ paddingBottom: 5}}/>
     </View>
   )
 }

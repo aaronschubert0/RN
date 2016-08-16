@@ -13,7 +13,7 @@ const SmallImage = ({ title, imageURL, section, time }) => {
         <Text style={{fontSize: 16, fontFamily:'Source Sans Pro', fontWeight: '500', paddingBottom: 5}}>
         {title}
         </Text>
-        <Meta time={time} section={section}/>
+        <Meta time={time} section={section.title}/>
       </View>
     </View>
   )
