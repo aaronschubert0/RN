@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { View, Animated, Image } from 'react-native'
 import TabButton from './TabButton'
-import getDeviceWidth from '../get-device-width'
+import { getDeviceWidth } from '../Utilities'
 
 export default class TabBar extends Component {
   static defaultProps = {
@@ -85,12 +85,13 @@ export default class TabBar extends Component {
     )
   }
 
-  measureTab (title, e) {
+  measureTab (title, index, e) {
     if (this._allTabsMeasured) return
     const { tabs, onTabActivated, onTabsMeasured, initialTab } = this.props
     const { x, width, height } = e.nativeEvent.layout
     this._tabMeasurements[title] = { left: x, right: x + width, width, height }
     if (title === initialTab || !initialTab && index === 0) {
+      this.setCurrentIndex(0, index)
       onTabActivated(title)
     }
     if (Object.keys(this._tabMeasurements).length === Object.keys(tabs).length) {
@@ -136,7 +137,7 @@ export default class TabBar extends Component {
                 key={title}
                 ref={tb => this._tabButtons[title] = tb}
                 title={title}
-                onLayout={(e) => this.measureTab(title, e)}
+                onLayout={(e) => this.measureTab(title, index, e)}
                 onPress={e => onTabActivated(title, { shouldAnimate: true })}
               />
             )

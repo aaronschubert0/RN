@@ -1,6 +1,6 @@
 import React from 'react'
 import { View } from 'react-native'
-import getDeviceWidth from '../get-device-width'
+import { getDeviceWidth } from '../Utilities'
 
 const Divider = ({ style }) => {
   return (

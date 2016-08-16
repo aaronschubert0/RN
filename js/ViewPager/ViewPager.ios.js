@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { ScrollView } from 'react-native'
-import getDeviceWidth from '../get-device-width'
+import { getDeviceWidth } from '../Utilities'
 
 const noop = () => {}
 
