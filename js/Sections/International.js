@@ -17,7 +17,7 @@ export default class International extends Component {
   }
 
   fetchArticles() {
-    requestRankedArticlesInSection(this.props.guid).then((articles) => {
+    requestRankedArticlesInSection(3125).then((articles) => {
       this.setState({ articles, loaded: true })
     })
   }

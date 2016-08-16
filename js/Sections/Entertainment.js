@@ -17,7 +17,7 @@ export default class Entertainment extends Component {
   }
 
   fetchArticles() {
-    requestRankedArticlesInSection(this.props.guid).then((articles) => {
+    requestRankedArticlesInSection(3147).then((articles) => {
       this.setState({ articles, loaded: true })
     })
   }

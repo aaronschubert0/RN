@@ -17,7 +17,7 @@ export default class Politics extends Component {
   }
 
   fetchArticles() {
-    requestRankedArticlesInSection(this.props.guid).then((articles) => {
+    requestRankedArticlesInSection(3128).then((articles) => {
       this.setState({ articles, loaded: true })
     })
   }

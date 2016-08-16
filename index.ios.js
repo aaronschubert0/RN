@@ -19,12 +19,12 @@ const Root = ({ push, pop }) => {
           pop
         }}
       >
-        <Tab title="Top Stories" guid={3057} component={TopStories} />
-        <Tab title="UK" guid={3124} component={UK} />
-        <Tab title="International" guid={3125} component={International} />
-        <Tab title="Politics" guid={3128} component={Politics} />
-        <Tab title="Features" guid={3146} component={Features} />
-        <Tab title="Entertainment" guid={3147} component={Entertainment} />
+        <Tab title="Top Stories" component={TopStories} />
+        <Tab title="UK" component={UK} />
+        <Tab title="International" component={International} />
+        <Tab title="Politics" component={Politics} />
+        <Tab title="Features" component={Features} />
+        <Tab title="Entertainment" component={Entertainment} />
       </TabNavigator>
     </View>
   )
