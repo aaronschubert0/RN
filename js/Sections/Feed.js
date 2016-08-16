@@ -3,7 +3,7 @@ import  { ListView, TouchableOpacity, RefreshControl } from 'react-native'
 import { Meta, Divider, InfoPanel } from '../Components/'
 import { FeaturedImage, SmallImage, Opinion, Live, Sponsored } from '../FeedItems/'
 import Article from '../Article/'
-
+import { moment } from '../Utilities'
 export default class Feed extends Component {
   constructor(props) {
     super(props)
@@ -16,14 +16,24 @@ export default class Feed extends Component {
   }
 
   componentWillMount() {
+    this.updateArticles(this.props.articles)
+  }
+
+  componentWillReceiveProps (nextProps) {
+    this.updateArticles(nextProps.articles)
+  }
+
+  updateArticles (articles) {
     this.setState({
-      dataSource: this.state.dataSource.cloneWithRows(this._createListItems(this.props.articles))
+      dataSource: this.state.dataSource.cloneWithRows(
+        this._createListItems(articles)
+      )
     })
   }
 
   _createListItems(articles) {
     const listItems = [
-      <InfoPanel lastUpdatedTime="10:12am" />,
+      <InfoPanel lastUpdatedTime={moment().format('h:mma')} />,
       ...articles.map((article, index) => {
         return this._previewForArticleType(article, index)
       })
