@@ -31,7 +31,7 @@ export default class Entertainment extends Component {
         <Feed
           onRefresh={this.fetchArticles.bind(this)}
           title={title}
-          articles={this.articles}
+          articles={this.state.articles}
           push={push}
           pop={pop}
         />
