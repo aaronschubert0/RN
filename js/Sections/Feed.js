@@ -42,13 +42,15 @@ export default class Feed extends Component {
    _previewForArticleType(article, index) {
     if (index === 0 && article.image) {
       return <Article.Preview.FeaturedImage title={article.title} imageURL={article.image.renditions.large} section={article.section} time={article.modified}/>
-    } else if (article.image) {
+    } else if (article.image && article.contentType === 'news') {
       return <Article.Preview.SmallImage title={article.title} imageURL={article.image.renditions.small} section={article.section} time={article.modified}/>
+    } else if (article.contentType === 'opinion') {
+      return <Article.Preview.Opinion byline={article.byline} quote={article.title} section={article.section} />
+    } else if (article.contentType === 'live-blog') {
+      return <Article.Preview.Live title={article.title} imageURL={article.imageURL} section={article.section} />
     }
     // } else if (type === 'opinion') {
-    //   return <Article.Preview.Opinion author={article.author} quote={article.quote} section={article.section} />
     // } else if (type === 'live') {
-    //   return <Article.Preview.Live title={article.title} imageURL={article.imageURL} section={article.section} />
     // } else if (type === 'ad') {
     //   return <Article.Preview.Sponsored title={article.title} imageURL={article.imageURL}/>
     // }

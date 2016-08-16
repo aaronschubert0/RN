@@ -5,6 +5,7 @@ export default function request (pathQuery) {
   const baseUrl = getBaseUrl()
   const url = `${baseUrl}/${pathQuery}`
   const cached = readCache(url)
+  console.log('URL', url)
   return cached ? Promise.resolve(cached) : fetch(url).then(
       response => {
           const [ , maxAge] = response.headers.get('cache-control').match(/max-age=([^,]+)/)
