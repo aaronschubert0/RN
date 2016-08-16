@@ -9,7 +9,10 @@ function formatedDate(date) {
   let minutes = Math.round((delta / 60) % 60)
   let hours = Math.round(delta / 3600)
 
-  if (hours >= 1) {
+  if (hours > 24) {
+    const days = Math.round(hours/24)
+    formatedTime = days + ' day'
+  } else if (hours >= 1) {
     formatedTime = hours + ' hr'
   } else if (minutes > 0) {
     formatedTime = minutes + ' min'

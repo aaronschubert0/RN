@@ -17,7 +17,6 @@ export default class TopStories extends Component {
   }
 
   fetchArticles() {
-    console.log('Fetch article')
     requestRankedArticlesInSection(this.props.guid).then((articles) => {
       this.articles = articles
       this.setState({ loaded: true })

@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { AppRegistry, View, ListView, NavigationExperimental } from 'react-native'
 import { TabNavigator, Tab } from './js/TabNavigator/'
-import { TopStories } from './js/Sections'
+import { TopStories, UK, International, Politics, Features, Entertainment } from './js/Sections'
 
 const {
   CardStack: NavigationCardStack,
@@ -20,12 +20,11 @@ const Root = ({ push, pop }) => {
         }}
       >
         <Tab title="Top Stories" guid={3057} component={TopStories} />
-        <Tab title="Glasgow / West" guid={3057} component={TopStories} />
-        <Tab title="UK" guid={3057} component={TopStories} />
-        <Tab title="International" guid={3057} component={TopStories} />
-        <Tab title="Politics" guid={3057} component={TopStories} />
-        <Tab title="Features" guid={3057} component={TopStories} />
-        <Tab title="Entertainment" guid={3057} component={TopStories} />
+        <Tab title="UK" guid={3124} component={UK} />
+        <Tab title="International" guid={3125} component={International} />
+        <Tab title="Politics" guid={3128} component={Politics} />
+        <Tab title="Features" guid={3146} component={Features} />
+        <Tab title="Entertainment" guid={3147} component={Entertainment} />
       </TabNavigator>
     </View>
   )
