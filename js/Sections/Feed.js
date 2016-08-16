@@ -59,7 +59,7 @@ export default class Feed extends Component {
       row === '0' ? object :
       <TouchableOpacity
         onPress={() => this.props.push(Article.Fullscreen,
-         { articleData: undefined, sectionTitle: this.props.title },
+         { articleData: object.props, sectionTitle: this.props.title },
           'article')}>
           {object}
         <Divider />
