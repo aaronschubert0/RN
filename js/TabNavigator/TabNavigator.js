@@ -17,6 +17,7 @@ export default class TabNavigator extends Component {
     super(props)
     this._contentScrollViewRestingPosition = 0
     this._contentScrollViewPosition = 0
+    this._scrollingDirectlyToTab = undefined
     this._updateVisibleTab = this._updateVisibleTab.bind(this)
   }
 
@@ -46,7 +47,8 @@ export default class TabNavigator extends Component {
   onContentScrollValueChange (currentIndex) {
     this.tabBar.setCurrentIndex(
       this._contentScrollViewRestingPosition,
-      currentIndex
+      currentIndex,
+      this._scrollingDirectlyToTab
     )
   }
 
@@ -69,10 +71,9 @@ export default class TabNavigator extends Component {
           ref={tb => this.tabBar = tb}
           tabs={tabs}
           initialTab={initialTab}
-          tabBarRef={tv => this.tv = tv}
           onTabsMeasured={measurements => this._tabMeasurements = measurements}
-          onTabActivated={(title, { shouldAnimate = false } = {}) => {
-            console.log('activated', title)
+          onTabActivated={(title, { shouldAnimate = false, direct = false } = {}) => {
+            if (direct) this._scrollingDirectlyToTab = title
             this._updateVisibleTab(title)
             this._contentScrollView.setPage(tabKeys.indexOf(title), shouldAnimate)
           }}
@@ -98,6 +99,7 @@ export default class TabNavigator extends Component {
 
             this._contentScrollViewIsScrolling = false
             this._contentScrollViewRestingPosition = position
+            this._scrollingDirectlyToTab = undefined
           }}
           onTouchStartCapture={e => {
             if (this._contentScrollViewIsScrolling) {
