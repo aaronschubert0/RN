@@ -18,8 +18,7 @@ export default class Entertainment extends Component {
 
   fetchArticles() {
     requestRankedArticlesInSection(this.props.guid).then((articles) => {
-      this.articles = articles
-      this.setState({ loaded: true })
+      this.setState({ articles, loaded: true })
     })
   }
 
@@ -30,7 +29,7 @@ export default class Entertainment extends Component {
       const { title, articles, push, pop } = this.props
       return (
         <Feed
-          onRefresh={this.fetchArticles}
+          onRefresh={this.fetchArticles.bind(this)}
           title={title}
           articles={this.articles}
           push={push}
