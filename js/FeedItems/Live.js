@@ -12,14 +12,15 @@ const Live = ({ article, pushArticle }) => {
         paddingLeft: 20,
         paddingRight: 20
       }}
-      onPress={() => this.props.pushArticle(article)}>
+      onPress={() => this.props.pushArticle(article)}
+    >
       <Image
-      source={{uri: imageURL}}
-      style={{
-        width: 100,
-        height: 56,
-        marginRight: 10
-      }}
+        source={{uri: imageURL}}
+        style={{
+          width: 100,
+          height: 56,
+          marginRight: 10
+        }}
       />
       <View style={{flex: 1}}>
         <Text style={{
@@ -28,7 +29,7 @@ const Live = ({ article, pushArticle }) => {
           fontWeight: '500',
           paddingBottom: 5
         }}>
-        {title}
+          {title}
         </Text>
         <View style={{
           flexDirection: 'row',

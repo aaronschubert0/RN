@@ -8,7 +8,8 @@ const FeaturedImage = ({ article, pushArticle }) => {
   const time = article.modified
   return (
     <TouchableOpacity
-    onPress={() => this.props.pushArticle(article)}>
+      onPress={() => this.props.pushArticle(article)}
+    >
       <View style={{
         paddingLeft: 20,
         paddingBottom: 15,
@@ -20,7 +21,7 @@ const FeaturedImage = ({ article, pushArticle }) => {
           fontFamily: 'Source Sans Pro',
           paddingBottom: 15
         }}>
-        {title}
+          {title}
         </Text>
         <Meta
           time={time}

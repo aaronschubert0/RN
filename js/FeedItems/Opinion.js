@@ -14,16 +14,17 @@ const Opinion = ({ article, pushArticle }) => {
           paddingRight: 20,
           paddingTop: 5
         }}
-        onPress={() => this.props.pushArticle(article)}>
+        onPress={() => this.props.pushArticle(article)}
+      >
           <Text style={{
             fontFamily: 'Merriweather-BlackItalic',
             fontSize: 20,
             color: '#09b4ff',
             paddingBottom: 10
           }}>
-          {fullName + '  /  '}
+            {fullName + '  /  '}
           <Text style={{
-            fontSize: 20, 
+            fontSize: 20,
             color: 'black',
             flex: 1
           }}>

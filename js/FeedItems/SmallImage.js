@@ -14,7 +14,8 @@ const SmallImage = ({ article, pushArticle }) => {
           paddingLeft: 20,
           paddingRight: 20
         }}
-        onPress={() => this.props.pushArticle(article)}>
+        onPress={() => this.props.pushArticle(article)}
+      >
         <TransitionalImage
           url={imageURL}
           style={{
@@ -23,7 +24,7 @@ const SmallImage = ({ article, pushArticle }) => {
             marginRight: 10,
             backgroundColor: '#D8D8D8'
           }}
-          />
+        />
         <View style={{flex: 1}}>
           <Text style={{
             fontSize: 16,
