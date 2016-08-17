@@ -10,10 +10,10 @@ const FeaturedImage = ({ article, pushArticle }) => {
     <TouchableOpacity
     onPress={() => this.props.pushArticle(article)}>
       <View style={{
-          paddingLeft: 20,
-          paddingBottom: 15,
-          paddingRight: 20
-        }}>
+        paddingLeft: 20,
+        paddingBottom: 15,
+        paddingRight: 20
+      }}>
         <Text style={{
           fontSize: 22,
           fontWeight: '700',
