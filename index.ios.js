@@ -30,6 +30,10 @@ const Root = ({ push, pop }) => {
   )
 }
 
+const EmptyComponent = () => {
+  return <View></View>
+}
+
 class Metro extends Component {
 
   constructor(props) {

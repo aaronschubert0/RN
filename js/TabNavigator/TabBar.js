@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, ScrollView, Animated, Image } from 'react-native'
+import { View, ScrollView, Animated, TouchableOpacity, Image } from 'react-native'
 import TabButton from './TabButton'
 import { getDeviceWidth } from '../Utilities'
 
@@ -18,11 +18,14 @@ export default class TabBar extends Component {
       tabViewPosition: new Animated.Value(0),
       tabUnderlineWidth: new Animated.Value(0),
       tabUnderlineLeft: new Animated.Value(0),
-      tabOpacity: new Animated.Value(0)
+      tabOpacity: new Animated.Value(0),
+      textColor: new Animated.Value(0),
+      tabKeys: Object.keys(props.tabs)
     }
     this._tabButtons = {}
     this._tabMeasurements = {}
-    this._scrollViewOffset = 0
+    this._tvRestingPosition = 0
+    this._tvScrollPosition = 0
     this._allTabsMeasured = false
   }
 
@@ -32,18 +35,14 @@ export default class TabBar extends Component {
 
   setCurrentIndex (restingIndex, currentIndex, scrollingDirectlyToTab) {
     const { tabs } = this.props
-    const tabKeys = Object.keys(tabs)
-
+    const { tabKeys } = this.state
     const left = currentIndex < restingIndex
-
-    const startTabIndex = Math.round(restingIndex)
-    const currentTabIndex = scrollingDirectlyToTab
-      ? startTabIndex
-      : left ? Math.ceil(currentIndex) : Math.floor(currentIndex)
-    const endTabIndex = scrollingDirectlyToTab
-      ? tabKeys.indexOf(scrollingDirectlyToTab)
-      : left ? Math.floor(currentIndex) : Math.ceil(currentIndex)
-
+    const { startTabIndex, currentTabIndex, endTabIndex } = this.getTabIndexes(
+      restingIndex,
+      currentIndex,
+      left,
+      scrollingDirectlyToTab
+    )
     const startTab = tabKeys[startTabIndex]
     const currentTab = tabKeys[currentTabIndex]
     const endTab = tabKeys[endTabIndex]
@@ -54,48 +53,87 @@ export default class TabBar extends Component {
       (endTabIndex - currentIndex) / (endTabIndex - startTabIndex)
     ) || 1
 
-    this._tabButtons[endTab].setActive(progressToEndTab)
+    requestAnimationFrame(() => {
+      // this.updateTabActives(currentTab, endTab, progressToEndTab)
+      this.updateTabUnderline(currentIndex)
+      if (!scrollingDirectlyToTab) {
+        // this.updateScrollPosition(currentIndex)
+      }
+    })
+  }
 
+  getTabIndexes (restingIndex, currentIndex, left, scrollingDirectlyToTab) {
+    const { tabKeys } = this.state
+    const startTabIndex = Math.round(restingIndex)
+    const currentTabIndex = scrollingDirectlyToTab
+      ? startTabIndex
+      : left ? Math.ceil(currentIndex) : Math.floor(currentIndex)
+
+    const endTabIndex = scrollingDirectlyToTab
+      ? tabKeys.indexOf(scrollingDirectlyToTab)
+      : left ? Math.floor(currentIndex) : Math.ceil(currentIndex)
+
+    return { startTabIndex, currentTabIndex, endTabIndex }
+  }
+
+  updateTabActives (currentTab, endTab, progressToEndTab) {
+    this._tabButtons[endTab].setActive(progressToEndTab)
     if (currentTab !== endTab) {
       this._tabButtons[currentTab].setActive(1 - progressToEndTab)
     }
+  }
 
-    requestAnimationFrame(() => {
-      // Update the width of the indicator
-      this.state.tabUnderlineWidth.setValue(
-        indexToIndicatorWidth(
-          currentIndex,
-          tabs,
-          this._tabMeasurements
-        )
-      )
-      this.state.tabUnderlineLeft.setValue(
-        indexToScrollPosition(
-          currentIndex,
-          tabs,
-          this._tabMeasurements
-        )
-      )
+  updateScrollPosition (currentIndex) {
+    const { tabs } = this.props
+    const { tabKeys } = this.state
+    const lastTab = this._tabMeasurements[tabKeys[tabKeys.length-1]]
 
-      if (!scrollingDirectlyToTab) {
-        // Update the scroll position of the tabs ScrollView
-        const nextScrollPosition = indexToScrollPosition(
-          currentIndex,
-          tabs,
-          this._tabMeasurements
-        )
+    console.log(this._tvRestingPosition)
 
-        const lastTab = this._tabMeasurements[tabKeys[tabKeys.length-1]]
-        this.tv.setNativeProps({
-          contentOffset: {
-            x: Math.min(
-              nextScrollPosition,
-              lastTab.left + lastTab.width - getDeviceWidth() + 50
-            )
-          }
-        })
-      }
-    })
+
+    // const nextScrollPosition = indexToScrollPosition(
+    //   currentIndex,
+    //   tabs,
+    //   this._tabMeasurements
+    // )
+    // this.tv.scrollTo({
+    //   x: Math.min(
+    //     nextScrollPosition,
+    //     lastTab.left + lastTab.width - getDeviceWidth() + 50
+    //   ),
+    //   animated: false
+    // })
+    // this.tv.setNativeProps({
+    //   contentOffset: {
+    //     x: Math.min(
+    //       nextScrollPosition,
+    //       lastTab.left + lastTab.width - getDeviceWidth() + 50
+    //     )
+    //   }
+    // })
+  }
+
+  updateTabUnderline (currentIndex) {
+    const { tabs } = this.props
+    // this.state.tabUnderlineWidth.setValue(
+    //   indexToIndicatorWidth(
+    //     currentIndex,
+    //     tabs,
+    //     this._tabMeasurements
+    //   )
+    // )
+    console.log(indexToIndicatorWidth(
+      currentIndex,
+      tabs,
+      this._tabMeasurements
+    ))
+    // this.state.tabUnderlineLeft.setValue(
+    //   indexToScrollPosition(
+    //     currentIndex,
+    //     tabs,
+    //     this._tabMeasurements
+    //   )
+    // )
   }
 
   measureTab (title, index, e) {
@@ -138,8 +176,11 @@ export default class TabBar extends Component {
             paddingLeft: 50
             // opacity: this.state.tabOpacity
           }}
-          onScroll={e => this._scrollViewOffset = e.nativeEvent.contentOffset.x}
-          scrollEventThrottle={16}
+          onScroll={e => this._tvScrollPosition = e.nativeEvent.contentOffset.x}
+          onTouchStartCapture={() => this._tvRestingPosition = this._tvScrollPosition}
+          onResponderRelease={() => this._tvRestingPosition = this._tvScrollPosition}
+          onMomentumScrollEnd={() => this._tvRestingPosition = this._tvScrollPosition}
+          scrollEventThrottle={64}
         >
           {Object.keys(tabs).map((title, index) => {
             return (
@@ -152,13 +193,24 @@ export default class TabBar extends Component {
                   onTabActivated(title, { shouldAnimate: true, direct: true })
                   const tabKeys = Object.keys(tabs)
                   const lastTab = this._tabMeasurements[tabKeys[tabKeys.length-1]]
+                  const deviceWidth = getDeviceWidth()
                   requestAnimationFrame(() => {
-                    this.tv.scrollTo({
-                      x: Math.min(
-                        this._tabMeasurements[title].left,
-                        lastTab.left + lastTab.width - getDeviceWidth() + 50
-                      )
-                    })
+                    const screenLeft = this._tvRestingPosition
+                    const screenRight = this._tvRestingPosition + deviceWidth
+                    const isOffLeft = !(screenLeft <= this._tabMeasurements[title].left)
+                    const isOffRight = !(screenRight >= this._tabMeasurements[title].right + 100)
+                    if (isOffLeft) {
+                      this.tv.scrollTo({
+                        x: this._tabMeasurements[title].left
+                      })
+                    } else if (isOffRight) {
+                      this.tv.scrollTo({
+                        x: Math.min(
+                          this._tabMeasurements[title].left - deviceWidth + this._tabMeasurements[title].width + 50 + 50,
+                          lastTab.left + lastTab.width - deviceWidth + 50
+                        )
+                      })
+                    }
                   })
                 }}
               />
