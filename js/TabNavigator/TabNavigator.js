@@ -72,7 +72,6 @@ export default class TabNavigator extends Component {
           tabBarRef={tv => this.tv = tv}
           onTabsMeasured={measurements => this._tabMeasurements = measurements}
           onTabActivated={(title, { shouldAnimate = false } = {}) => {
-            console.log('activated', title)
             this._updateVisibleTab(title)
             this._contentScrollView.setPage(tabKeys.indexOf(title), shouldAnimate)
           }}

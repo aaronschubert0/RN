@@ -1,19 +1,41 @@
 import React from 'react'
-import { View, Text } from 'react-native'
-import { Meta } from '../Components/'
+import { View, Text, TouchableOpacity } from 'react-native'
+import { Meta, Divider } from '../Components/'
 
-const Opinion = ({ byline, quote, section }) => {
+const Opinion = ({ article, pushArticle }) => {
+  const { byline, title, section } = article
   const author = byline[0]
   const fullName = `${author.firstname} ${author.lastname}`
   return (
-    <View style={{ paddingLeft: 20, paddingRight: 20, paddingTop: 5 }}>
-        <Text style={{ fontFamily: 'Merriweather-BlackItalic', fontSize: 20, color: '#09b4ff', paddingBottom: 10}}>
-        {fullName + '  /  '}
-        <Text style={{ fontSize: 20, color: 'black', flex: 1 }}>
-          {quote}
-        </Text>
-        </Text>
-      <Meta section={section.title} style={{ paddingBottom: 5}}/>
+    <View>
+      <TouchableOpacity
+        style={{
+          paddingLeft: 20,
+          paddingRight: 20,
+          paddingTop: 5
+        }}
+        onPress={() => this.props.pushArticle(article)}>
+          <Text style={{
+            fontFamily: 'Merriweather-BlackItalic',
+            fontSize: 20,
+            color: '#09b4ff',
+            paddingBottom: 10
+          }}>
+          {fullName + '  /  '}
+          <Text style={{
+            fontSize: 20, 
+            color: 'black',
+            flex: 1
+          }}>
+            {title}
+          </Text>
+          </Text>
+        <Meta
+          section={section.title}
+          style={{ paddingBottom: 5}}
+        />
+      </TouchableOpacity>
+      <Divider />
     </View>
   )
 }

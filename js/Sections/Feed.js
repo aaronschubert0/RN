@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import  { ListView, TouchableOpacity, RefreshControl } from 'react-native'
+import  { ListView, TouchableOpacity, RefreshControl, View } from 'react-native'
 import { Meta, Divider, InfoPanel } from '../Components/'
 import { FeaturedImage, SmallImage, Opinion, Live, Sponsored } from '../FeedItems/'
 import Article from '../Article/'
@@ -51,30 +51,30 @@ export default class Feed extends Component {
 
    _previewForArticleType(article, index) {
     if (index === 0 && article.image) {
-      return <Article.Preview.FeaturedImage title={article.title} imageURL={article.image.renditions.large} section={article.section} time={article.modified}/>
+      return <Article.Preview.FeaturedImage article={article} pushArticle={this._pushArticle.bind(this)}/>
     } else if (article.image && article.contentType === 'news') {
-      return <Article.Preview.SmallImage title={article.title} imageURL={article.image.renditions.small} section={article.section} time={article.modified}/>
+      return <Article.Preview.SmallImage article={article} pushArticle={this._pushArticle.bind(this)}/>
     } else if (article.contentType === 'opinion') {
-      return <Article.Preview.Opinion byline={article.byline} quote={article.title} section={article.section} />
+      return <Article.Preview.Opinion article={article} pushArticle={this._pushArticle.bind(this)}/>
     } else if (article.contentType === 'live-blog') {
-      return <Article.Preview.Live title={article.title} imageURL={article.imageURL} section={article.section} />
+      return <Article.Preview.Live article={article} pushArticle={this._pushArticle.bind(this)}/>
+    } else {
+      return <View />
+      // console.log('nothing', article.contentType)
     }
     // } else if (type === 'ad') {
     //   return <Article.Preview.Sponsored title={article.title} imageURL={article.imageURL}/>
     // }
   }
 
+  _pushArticle(article) {
+    this.props.push(Article.Fullscreen,
+     { articleData: article, sectionTitle: this.props.title },
+      'article')
+  }
+
   _renderComponent(object, section, row) {
-    return (
-      row === '0' ? object :
-      <TouchableOpacity
-        onPress={() => this.props.push(Article.Fullscreen,
-         { articleData: object.props, sectionTitle: this.props.title },
-          'article')}>
-          {object}
-        <Divider />
-      </TouchableOpacity>
-    )
+    return object
   }
 
   render() {
