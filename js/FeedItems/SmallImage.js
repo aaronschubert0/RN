@@ -32,7 +32,7 @@ const SmallImage = ({ article, pushArticle }) => {
             fontWeight: '500',
             paddingBottom: 5
           }}>
-          {title}
+            {title}
           </Text>
           <Meta
             time={time}

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import { View, Animated, Image } from 'react-native'
+import { View, Animated, Image, TouchableOpacity } from 'react-native'
 import TabButton from './TabButton'
+import NavigationBar from './NavigationBar'
 import { getDeviceWidth } from '../Utilities'
 
 export default class TabBar extends Component {
@@ -113,9 +114,7 @@ export default class TabBar extends Component {
           overflow: 'visible'
         }}
       >
-      <View style={{ height: 30, justifyContent: 'center', alignItems: 'center', paddingTop: 2 }}>
-        <Image source={require('../../img/logo.png')} style={{ width: 82, height: 26}} />
-      </View>
+        <NavigationBar />
         <Animated.View
           ref={tv => {
             this.tv = tv
