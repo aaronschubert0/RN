@@ -29,7 +29,11 @@ const FeaturedImage = ({ article, pushArticle }) => {
       </View>
       <TransitionalImage
         url={imageURL}
-        style={{width: 375, height: 211, backgroundColor: '#D8D8D8'}}
+        style={{
+          width: 375,
+          height: 211,
+          backgroundColor: '#D8D8D8'
+        }}
       />
       <Divider />
     </TouchableOpacity>
