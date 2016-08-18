@@ -6,6 +6,7 @@ const TopStories = (props) => {
     <Section
       {...props}
       guid={3057}
+      layout={'ranked'}
     />
   )
 }

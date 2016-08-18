@@ -2,7 +2,7 @@ import React from 'react'
 import { View, Text, TouchableOpacity } from 'react-native'
 import { Meta, Divider } from '../Components/'
 
-const Opinion = ({ article, pushArticle }) => {
+const Opinion = ({ article, pushArticle, showMeta }) => {
   const { byline, title, section } = article
   const author = byline[0]
   const fullName = `${author.firstname} ${author.lastname}`
@@ -14,7 +14,7 @@ const Opinion = ({ article, pushArticle }) => {
           paddingRight: 20,
           paddingTop: 5
         }}
-        onPress={() => this.props.pushArticle(article)}
+        onPress={() => pushArticle(article)}
       >
           <Text style={{
             fontFamily: 'Merriweather-BlackItalic',
@@ -31,10 +31,10 @@ const Opinion = ({ article, pushArticle }) => {
             {title}
           </Text>
           </Text>
-        <Meta
+        { showMeta && <Meta
           section={section.title}
           style={{ paddingBottom: 5}}
-        />
+        /> }
       </TouchableOpacity>
       <Divider />
     </View>

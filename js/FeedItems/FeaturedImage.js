@@ -2,13 +2,13 @@ import React from 'react'
 import { View, Text, Image, TouchableOpacity } from 'react-native'
 import { Meta, TransitionalImage, Divider } from '../Components/'
 
-const FeaturedImage = ({ article, pushArticle }) => {
+const FeaturedImage = ({ article, pushArticle, showMeta }) => {
   const { title, section } = article
   const imageURL = article.image.renditions.large
   const time = article.modified
   return (
     <TouchableOpacity
-      onPress={() => this.props.pushArticle(article)}
+      onPress={() => pushArticle(article)}
     >
       <View style={{
         paddingLeft: 20,
@@ -23,10 +23,10 @@ const FeaturedImage = ({ article, pushArticle }) => {
         }}>
           {title}
         </Text>
-        <Meta
+        { showMeta && <Meta
           time={time}
           section={section.title}
-        />
+        /> }
       </View>
       <TransitionalImage
         url={imageURL}

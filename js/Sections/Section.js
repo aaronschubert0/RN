@@ -9,6 +9,10 @@ export default class Section extends Component {
     guid: React.PropTypes.number.isRequired
   }
 
+  static defaultProps = {
+    layout: 'chronological' // either chronological or ranked
+  }
+
   constructor(props) {
     super(props)
     this.state = {
@@ -38,7 +42,7 @@ export default class Section extends Component {
     if (!this.state.loaded) {
       return <Tombstones />
     } else {
-      const { title, articles, push, pop } = this.props
+      const { title, push, pop } = this.props
       return (
         <Feed
           onRefresh={this.fetchArticles.bind(this)}
@@ -46,6 +50,7 @@ export default class Section extends Component {
           articles={this.state.articles}
           push={push}
           pop={pop}
+          layout={this.props.layout}
         />
       )
     }

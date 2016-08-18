@@ -2,7 +2,7 @@ import React from 'react'
 import { View, Text, Image, TouchableOpacity } from 'react-native'
 import { Meta, TransitionalImage, Divider } from '../Components/'
 
-const SmallImage = ({ article, pushArticle }) => {
+const SmallImage = ({ article, pushArticle, showMeta }) => {
   const { title, section } = article
   const imageURL = article.image.renditions.small
   const time = article.modified
@@ -14,7 +14,7 @@ const SmallImage = ({ article, pushArticle }) => {
           paddingLeft: 20,
           paddingRight: 20
         }}
-        onPress={() => this.props.pushArticle(article)}
+        onPress={() => pushArticle(article)}
       >
         <TransitionalImage
           url={imageURL}
@@ -34,10 +34,10 @@ const SmallImage = ({ article, pushArticle }) => {
           }}>
             {title}
           </Text>
-          <Meta
+          { showMeta && <Meta
             time={time}
             section={section.title}
-          />
+          /> }
         </View>
       </TouchableOpacity>
       <Divider/>

@@ -2,7 +2,7 @@ import React from 'react'
 import { View, Image, Text, TouchableOpacity } from 'react-native'
 import { Meta, Divider } from '../Components/'
 
-const Live = ({ article, pushArticle }) => {
+const Live = ({ article, pushArticle, showMeta }) => {
   const { title, imageURL, section } = article
   return (
   <View>
@@ -12,7 +12,7 @@ const Live = ({ article, pushArticle }) => {
         paddingLeft: 20,
         paddingRight: 20
       }}
-      onPress={() => this.props.pushArticle(article)}
+      onPress={() => pushArticle(article)}
     >
       <Image
         source={{uri: imageURL}}
@@ -50,7 +50,9 @@ const Live = ({ article, pushArticle }) => {
               fontWeight: '500'
             }}>{'LIVE'}</Text>
           </View>
-          <Meta section={section.title}/>
+          { showMeta &&
+            <Meta section={section.title}/>
+          }
         </View>
       </View>
     </TouchableOpacity>

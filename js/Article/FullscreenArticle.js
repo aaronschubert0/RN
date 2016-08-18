@@ -2,7 +2,7 @@ import React from 'react'
 import  { View, TouchableOpacity, Image, ScrollView, Text } from 'react-native'
 
 const FullscreenArticle = ({ articleData, sectionTitle, pop }) => {
-  const { title, imageURL } = articleData
+  const { title } = articleData
   return (
     <View style={{ backgroundColor: 'white', flex: 1 }}>
       <View style={{ backgroundColor: 'white', borderBottomColor: 'gray', borderBottomWidth: 0.5, height: 64, flexDirection:'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 20, paddingLeft: 20, paddingRight: 20 }}>
@@ -14,7 +14,7 @@ const FullscreenArticle = ({ articleData, sectionTitle, pop }) => {
       </View>
       <ScrollView style={{ flex: 1}}>
         <Image
-        source={{ uri: imageURL }}
+        source={{ uri: articleData.image.renditions.large }}
         style={{ width: 375, height: 211 }}
         />
         <View style={{ flex: 1, backgroundColor: 'white', paddingLeft: 20, paddingRight: 20 }}>
