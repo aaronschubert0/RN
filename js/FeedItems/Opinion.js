@@ -36,7 +36,7 @@ const Opinion = ({ article, pushArticle, showMeta }) => {
             section={section.title}
             style={{ paddingBottom: 5}}
           />
-       }
+        }
       </TouchableOpacity>
       <Divider />
     </View>
