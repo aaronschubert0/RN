@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, TouchableOpacity, Image } from 'react-native'
 import Hamburger from './Hamburger.js'
+import { cycleEnvironments } from '../API/environments'
 
 const NavigationBar = () => {
   return (
@@ -8,10 +9,12 @@ const NavigationBar = () => {
       <TouchableOpacity style={{ paddingLeft: 20, paddingTop: 3 }}>
         <Hamburger />
       </TouchableOpacity>
-      <Image
-        source={require('../../img/logo.png')}
-        style={{ marginLeft: 30 , width: 82, height: 26}}
-      />
+      <TouchableOpacity onPress={cycleEnvironments}>
+        <Image
+          source={require('../../img/logo.png')}
+          style={{ marginLeft: 30 , width: 82, height: 26}}
+        />
+      </TouchableOpacity>
     </View>
   )
 }
