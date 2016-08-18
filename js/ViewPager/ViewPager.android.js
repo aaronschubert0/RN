@@ -25,10 +25,14 @@ export default class ViewPager extends Component {
       <ViewPagerAndroid
         ref={vp => this.vp = vp}
         style={style}
+        onLayout={e => {
+          this.width = e.nativeEvent.layout.width
+        }}
         onPageScroll={e => {
           const position = e.nativeEvent.position + e.nativeEvent.offset
           this.position = position
-          onScroll(position)
+          e.nativeEvent.contentOffset = { x: position*this.width }
+          onScroll(e)
         }}
         onPageScrollStateChanged={state => {
           switch (state) {
