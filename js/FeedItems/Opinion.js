@@ -31,10 +31,12 @@ const Opinion = ({ article, pushArticle, showMeta }) => {
             {title}
           </Text>
           </Text>
-        { showMeta && <Meta
-          section={section.title}
-          style={{ paddingBottom: 5}}
-        /> }
+        { showMeta &&
+          <Meta
+            section={section.title}
+            style={{ paddingBottom: 5}}
+          />
+       }
       </TouchableOpacity>
       <Divider />
     </View>

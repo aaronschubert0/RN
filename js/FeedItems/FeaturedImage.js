@@ -23,10 +23,12 @@ const FeaturedImage = ({ article, pushArticle, showMeta }) => {
         }}>
           {title}
         </Text>
-        { showMeta && <Meta
-          time={time}
-          section={section.title}
-        /> }
+        { showMeta &&
+           <Meta
+            time={time}
+            section={section.title}
+          />
+        }
       </View>
       <TransitionalImage
         url={imageURL}
