@@ -1,13 +1,22 @@
-import React, { Component } from 'react'
+import React, { Component, PropTypes } from 'react'
 import { View, ScrollView, Animated, TouchableOpacity, Image } from 'react-native'
 import TabButton from './TabButton'
-import NavigationBar from './NavigationBar'
 import { getDeviceWidth } from '../Utilities'
 
 const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView)
 
 export default class TabBar extends Component {
+  static propTypes = {
+    style: PropTypes.object,
+    tabs: PropTypes.object.isRequired,
+    initialTab: PropTypes.string,
+    tabBarRef: PropTypes.func,
+    onTabsMeasured: PropTypes.func,
+    onTabActivated: PropTypes.func
+  }
+
   static defaultProps = {
+    style: {},
     tabs: {},
     initalTab: undefined,
     tabBarRef: () => {},
@@ -75,17 +84,16 @@ export default class TabBar extends Component {
   }
 
   render () {
-    const { tabs, tabBarRef, onTabActivated, onTabsMeasured } = this.props
+    const { style, tabs, tabBarRef, onTabActivated, onTabsMeasured } = this.props
     const tabKeys = Object.keys(tabs)
     const deviceWidth = getDeviceWidth()
     return (
       <View
         style={{
-          height: 80,
-          overflow: 'visible'
+          overflow: 'visible',
+          ...style
         }}
       >
-        <NavigationBar />
         <ScrollView
           ref={tv => this.tv = tv}
           horizontal

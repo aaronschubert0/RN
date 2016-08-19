@@ -6,8 +6,11 @@ import TabBar from './TabBar'
 import ViewPager from '../ViewPager'
 import { getDeviceWidth } from '../Utilities'
 
+const TAB_BAR_HEIGHT = 50
+
 export default class TabNavigator extends Component {
   static propTypes = {
+    height: PropTypes.number.isRequired,
     renderDistance: PropTypes.number.isRequired,
     initialTab: PropTypes.string
   }
@@ -44,7 +47,7 @@ export default class TabNavigator extends Component {
   }
 
   render () {
-    const { renderDistance, initialTab } = this.props
+    const { renderDistance, initialTab, height } = this.props
     const { tabs, visibleTab } = this.state
     const tabKeys = Object.keys(tabs)
     const visibleTabIndex = tabKeys.indexOf(visibleTab)
@@ -71,6 +74,9 @@ export default class TabNavigator extends Component {
             this._contentScrollView.setPage(tabKeys.indexOf(title), shouldAnimate)
           }}
           contentScrollX={this.state.scrollX}
+          style={{
+            height: TAB_BAR_HEIGHT
+          }}
         />
         <ViewPager
           ref={sv => this._contentScrollView = sv}
@@ -86,7 +92,7 @@ export default class TabNavigator extends Component {
             })
           }}
           style={{
-            height: Dimensions.get('window').height-95
+            height: height - TAB_BAR_HEIGHT
           }}
         >
           {tabKeys.map((key, index) => {
