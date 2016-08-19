@@ -34,10 +34,7 @@ export default class TabButton extends Component {
             fontSize: 12,
             fontFamily:'Source Sans Pro',
             fontWeight: '500',
-            color: active.interpolate({
-              inputRange: [0, 1],
-              outputRange: ['rgb(188, 188, 188)', 'rgb(48, 192, 255)']
-            })
+            ...this.props.style
           }}
         >
           {title.toUpperCase()}

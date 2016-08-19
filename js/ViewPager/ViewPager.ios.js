@@ -36,7 +36,7 @@ export default class ViewPager extends Component {
             this.isScrolling = true
             onScrollStart(Math.round(e.nativeEvent.contentOffset.x / width))
           }
-          onScroll(e.nativeEvent.contentOffset.x / width)
+          onScroll(e)
         }}
         onTouchStartCapture={onTouchStartCapture}
         /* Non-configurable */

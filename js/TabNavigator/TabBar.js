@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
-import { View, Animated, Image, TouchableOpacity } from 'react-native'
+import { View, ScrollView, Animated, TouchableOpacity, Image } from 'react-native'
 import TabButton from './TabButton'
 import NavigationBar from './NavigationBar'
 import { getDeviceWidth } from '../Utilities'
+
+const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView)
 
 export default class TabBar extends Component {
   static defaultProps = {
@@ -18,10 +20,16 @@ export default class TabBar extends Component {
     this.state = {
       tabViewPosition: new Animated.Value(0),
       tabUnderlineWidth: new Animated.Value(0),
-      tabOpacity: new Animated.Value(0)
+      tabUnderlineLeft: new Animated.Value(0),
+      tabOpacity: new Animated.Value(0),
+      textColor: new Animated.Value(0),
+      tabKeys: Object.keys(props.tabs)
     }
     this._tabButtons = {}
     this._tabMeasurements = {}
+    this._tvRestingPosition = 0
+    this._tvScrollPosition = 0
+    this._contentRestingPosition = 0
     this._allTabsMeasured = false
   }
 
@@ -29,61 +37,23 @@ export default class TabBar extends Component {
     return false
   }
 
-  setCurrentIndex (restingIndex, currentIndex) {
+  componentDidMount () {
+    this.props.contentScrollX.addListener(
+      ({ value }) => {
+        const position = indexToScrollPosition(
+          value/getDeviceWidth(),
+          this.props.tabs,
+          this._tabMeasurements
+        )
+        this.tv.scrollTo({ x: position, animated: false })
+      }
+    )
+  }
+
+  updateScrollPosition (currentIndex) {
     const { tabs } = this.props
-    const tabKeys = Object.keys(tabs)
-
-    const left = currentIndex < restingIndex
-
-    const startTabIndex = Math.round(restingIndex)
-    const currentTabIndex = left ? Math.ceil(currentIndex) : Math.floor(currentIndex)
-    const endTabIndex = left ? Math.floor(currentIndex) : Math.ceil(currentIndex)
-
-    const startTab = tabKeys[startTabIndex]
-    const currentTab = tabKeys[currentTabIndex]
-    const endTab = tabKeys[endTabIndex]
-
-    if (!endTab || !currentTab || !startTab) return
-
-    const progressToEndTab = 1 - (
-      left ? currentIndex - endTabIndex : endTabIndex - currentIndex
-    )
-
-    this._tabButtons[endTab].setActive(progressToEndTab)
-
-    if (currentTab !== endTab) {
-      this._tabButtons[currentTab].setActive(1 - progressToEndTab)
-    }
-
-    // Update the scroll position of the tabs ScrollView
-    const currentScrollPosition = indexToScrollPosition(
-      currentIndex,
-      tabs,
-      this._tabMeasurements
-    )
-    requestAnimationFrame(() => {
-      this.tv.setNativeProps({
-        style: {
-          transform: [
-            { translateX: -(currentScrollPosition - 50) }
-          ]
-        }
-      })
-    })
-
-    // Update the width of the indicator
-    const currentIndicatorWidth = indexToIndicatorWidth(
-      currentIndex,
-      tabs,
-      this._tabMeasurements
-    )
-    this.state.tabUnderlineWidth.setValue(
-      indexToIndicatorWidth(
-        currentIndex,
-        tabs,
-        this._tabMeasurements
-      )
-    )
+    const { tabKeys } = this.state
+    const lastTab = this._tabMeasurements[tabKeys[tabKeys.length-1]]
   }
 
   measureTab (title, index, e) {
@@ -92,7 +62,6 @@ export default class TabBar extends Component {
     const { x, width, height } = e.nativeEvent.layout
     this._tabMeasurements[title] = { left: x, right: x + width, width, height }
     if (title === initialTab || !initialTab && index === 0) {
-      this.setCurrentIndex(0, index)
       onTabActivated(title)
     }
     if (Object.keys(this._tabMeasurements).length === Object.keys(tabs).length) {
@@ -107,6 +76,8 @@ export default class TabBar extends Component {
 
   render () {
     const { tabs, tabBarRef, onTabActivated, onTabsMeasured } = this.props
+    const tabKeys = Object.keys(tabs)
+    const deviceWidth = getDeviceWidth()
     return (
       <View
         style={{
@@ -115,33 +86,74 @@ export default class TabBar extends Component {
         }}
       >
         <NavigationBar />
-        <Animated.View
-          ref={tv => {
-            this.tv = tv
-            tabBarRef(tv)
-          }}
+        <ScrollView
+          ref={tv => this.tv = tv}
+          horizontal
+          showsHorizontalScrollIndicator={false}
           style={{
-            flexDirection: 'row',
-            position: 'absolute',
-            top: 30,
-            left: 0,
-            bottom: 0,
-            right: -3000,
-            opacity: this.state.tabOpacity
+            flex: 1,
+            paddingLeft: 50,
+            // opacity: this.state.tabOpacity
           }}
         >
-          {Object.keys(tabs).map((title, index) => {
+          {tabKeys.map((title, index) => {
             return (
               <TabButton
                 key={title}
                 ref={tb => this._tabButtons[title] = tb}
                 title={title}
                 onLayout={(e) => this.measureTab(title, index, e)}
-                onPress={e => onTabActivated(title, { shouldAnimate: true })}
+                onPress={() => this.props.onTabActivated(title, { shouldAnimate: true })}
+                style={{
+                  color: this.props.contentScrollX.interpolate({
+                    inputRange: [0, tabKeys.length*deviceWidth],
+                    outputRange: ['rgb(188, 188, 188)', 'rgb(48, 192, 255)'],
+                    easing: (val) => {
+                      const scrollPosition = val*(tabKeys.length*deviceWidth)
+                      const position = scrollPosition/deviceWidth
+                      const progress = position - Math.floor(position)
+                      if (index === Math.floor(position)) {
+                        return step(1 - progress, 25)
+                      } else if (index === Math.ceil(position)) {
+                        return step(progress, 25)
+                      } else {
+                        return 0
+                      }
+                    }
+                  })
+                }}
               />
             )
           })}
-        </Animated.View>
+          <Animated.View style={{
+            position: 'absolute',
+            height: 3,
+            backgroundColor: '#09b4ff',
+            bottom: 0,
+            left: this.props.contentScrollX.interpolate({
+              inputRange: [0, 1],
+              outputRange: [0, 1],
+              easing: (val) => {
+                return !this._allTabsMeasured ? 0 : indexToScrollPosition(
+                  val/getDeviceWidth(),
+                  this.props.tabs,
+                  this._tabMeasurements
+                )
+              }
+            }),
+            width: this.props.contentScrollX.interpolate({
+              inputRange: [0, 1],
+              outputRange: [0, 1],
+              easing: (val) => {
+                return !this._allTabsMeasured ? 0 : indexToIndicatorWidth(
+                  val/getDeviceWidth(),
+                  this.props.tabs,
+                  this._tabMeasurements
+                )
+              }
+            })
+          }}></Animated.View>
+        </ScrollView>
         <View style={{
           position: 'absolute',
           height: 0.5,
@@ -150,14 +162,6 @@ export default class TabBar extends Component {
           left: -getDeviceWidth(),
           right: -getDeviceWidth()
         }}></View>
-        <Animated.View style={{
-          position: 'absolute',
-          height: 3,
-          backgroundColor: '#09b4ff',
-          bottom: 0,
-          left: 50,
-          width: this.state.tabUnderlineWidth,
-        }}></Animated.View>
       </View>
 
     )
@@ -166,8 +170,8 @@ export default class TabBar extends Component {
 
 function indexToScrollPosition (index, tabs, measurements) {
   const tabKeys = Object.keys(tabs)
-  const lowerTab = tabKeys[Math.floor(index)]
-  const higherTab = tabKeys[Math.ceil(index)]
+  const lowerTab = tabKeys[Math.floor(index)] || tabKeys[0]
+  const higherTab = tabKeys[Math.ceil(index)] || tabKeys[tabKeys.length-1]
   const lowerPosition = measurements[lowerTab].left
   const higherPosition = measurements[higherTab].left
   const diff = higherPosition - lowerPosition
@@ -176,10 +180,14 @@ function indexToScrollPosition (index, tabs, measurements) {
 
 function indexToIndicatorWidth (index, tabs, measurements) {
   const tabKeys = Object.keys(tabs)
-  const lowerTab = tabKeys[Math.floor(index)]
-  const higherTab = tabKeys[Math.ceil(index)]
+  const lowerTab = tabKeys[Math.floor(index)] || tabKeys[0]
+  const higherTab = tabKeys[Math.ceil(index)] || tabKeys[tabKeys.length-1]
   const lowerWidth = measurements[lowerTab].width
   const higherWidth = measurements[higherTab].width
   const diff = higherWidth - lowerWidth
   return lowerWidth + (diff * (index - Math.floor(index)))
+}
+
+function step (value, step) {
+  return value - (((value*100) % step) / 100)
 }
