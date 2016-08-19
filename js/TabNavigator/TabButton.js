@@ -27,11 +27,11 @@ export default class TabButton extends Component {
       <TouchableOpacity
         onPress={onPress || noop}
         onLayout={onLayout || noop}
-        style={{ padding: 15, paddingBottom: 35 }}
+        style={{ padding: 15 }}
       >
         <Animated.Text
           style={{
-            fontSize: 12,
+            fontSize: 14,
             fontFamily:'Source Sans Pro',
             fontWeight: '500',
             ...this.props.style

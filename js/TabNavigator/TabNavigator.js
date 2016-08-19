@@ -6,7 +6,7 @@ import TabBar from './TabBar'
 import ViewPager from '../ViewPager'
 import { getDeviceWidth } from '../Utilities'
 
-const TAB_BAR_HEIGHT = 50
+const TAB_BAR_HEIGHT = 47
 
 export default class TabNavigator extends Component {
   static propTypes = {
