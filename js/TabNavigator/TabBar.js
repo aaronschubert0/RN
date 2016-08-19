@@ -36,6 +36,19 @@ export default class TabBar extends Component {
     return false
   }
 
+  componentDidMount () {
+    this.props.contentScrollX.addListener(
+      ({ value }) => {
+        const position = indexToScrollPosition(
+          value/getDeviceWidth(),
+          this.props.tabs,
+          this._tabMeasurements
+        )
+        this.tv.scrollTo({ x: position, animated: false })
+      }
+    )
+  }
+
   updateScrollPosition (currentIndex) {
     const { tabs } = this.props
     const { tabKeys } = this.state
@@ -74,14 +87,14 @@ export default class TabBar extends Component {
         <View style={{ height: 30, justifyContent: 'center', alignItems: 'center', paddingTop: 2 }}>
           <Image source={require('../../img/logo.png')} style={{ width: 82, height: 26}} />
         </View>
-        <AnimatedScrollView
+        <ScrollView
           ref={tv => this.tv = tv}
           horizontal
           showsHorizontalScrollIndicator={false}
           style={{
             flex: 1,
             paddingLeft: 50,
-            opacity: this.state.tabOpacity
+            // opacity: this.state.tabOpacity
           }}
         >
           {tabKeys.map((title, index) => {
@@ -141,7 +154,7 @@ export default class TabBar extends Component {
               }
             })
           }}></Animated.View>
-        </AnimatedScrollView>
+        </ScrollView>
         <View style={{
           position: 'absolute',
           height: 0.5,

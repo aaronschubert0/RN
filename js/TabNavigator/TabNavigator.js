@@ -62,7 +62,10 @@ export default class TabNavigator extends Component {
           ref={tb => this.tabBar = tb}
           tabs={tabs}
           initialTab={initialTab}
-          onTabsMeasured={measurements => this._tabMeasurements = measurements}
+          onTabsMeasured={measurements => {
+            this._tabMeasurements = measurements
+            this.state.scrollX.setValue(0)
+          }}
           onTabActivated={(title, { shouldAnimate = false } = {}) => {
             this._updateVisibleTab(title)
             this._contentScrollView.setPage(tabKeys.indexOf(title), shouldAnimate)
