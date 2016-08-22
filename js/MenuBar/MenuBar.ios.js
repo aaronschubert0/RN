@@ -24,10 +24,9 @@ export default class MenuBar extends Component {
   }
 
   onHamburgerPress = () => {
-    const { onHamburgerPress } = this.props
     const { menuOpen } = this.state
 
-    onHamburgerPress()
+    this.props.onHamburgerPress()
 
     if (!menuOpen) {
       this.setState({ menuOpen: true })

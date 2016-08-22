@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-import { View, ScrollView, Animated, TouchableOpacity, Image } from 'react-native'
+import { View, ScrollView, Animated, TouchableOpacity, Image, Platform } from 'react-native'
 import TabButton from './TabButton'
 import { getDeviceWidth } from '../Utilities'
 
@@ -100,7 +100,7 @@ export default class TabBar extends Component {
           showsHorizontalScrollIndicator={false}
           style={{
             flex: 1,
-            paddingLeft: 50,
+            paddingLeft: Platform.select({ ios: 50, android: 0 }),
             // opacity: this.state.tabOpacity
           }}
         >
